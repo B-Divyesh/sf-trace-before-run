@@ -98,6 +98,35 @@ test("non-numeric final values show a format error before reveal", async ({ page
   await expect(page.getByText("Trace matched")).toBeVisible();
 });
 
+test("showing and hiding a nudge preserves the uncommitted prediction and focus", async ({ page }) => {
+  await page.goto("/demo");
+  const score = page.getByLabel("Final value of score");
+  const badge = page.getByLabel("Final value of badge");
+  const output = page.getByLabel("Printed output");
+  const path = page.getByLabel("If path", { exact: true });
+
+  await score.fill("8");
+  await badge.fill("1");
+  await output.fill("8");
+  await path.check();
+
+  await page.getByRole("button", { name: "Show one nudge" }).click();
+  await expect(page.getByText("Decide whether 7 passes the test before adding badge.")).toBeVisible();
+  await expect(score).toHaveValue("8");
+  await expect(badge).toHaveValue("1");
+  await expect(output).toHaveValue("8");
+  await expect(path).toBeChecked();
+  await expect(page.getByRole("button", { name: "Hide the nudge" })).toBeFocused();
+
+  await page.getByRole("button", { name: "Hide the nudge" }).click();
+  await expect(page.getByText("Decide whether 7 passes the test before adding badge.")).toBeHidden();
+  await expect(score).toHaveValue("8");
+  await expect(badge).toHaveValue("1");
+  await expect(output).toHaveValue("8");
+  await expect(path).toBeChecked();
+  await expect(page.getByRole("button", { name: "Show one nudge" })).toBeFocused();
+});
+
 test("@claim:demo-isolated keeps demo progress out of practice storage", async ({ page }) => {
   const externalRequests: string[] = [];
   page.on("request", (request) => {

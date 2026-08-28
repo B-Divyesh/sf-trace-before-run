@@ -306,10 +306,10 @@ function practicePage(demo: boolean) {
         <p class="sr-only" role="status" data-path-status></p>
         <div class="prediction-actions">
           <button class="button button-primary" type="submit" ${validation ? "disabled" : ""}>Commit my trace</button>
-          <button class="button button-quiet" type="button" data-hint>${state.hint ? "Hide the nudge" : "Show one nudge"}</button>
+          <button class="button button-quiet" type="button" data-hint aria-expanded="${state.hint}" aria-controls="nudge-note">${state.hint ? "Hide the nudge" : "Show one nudge"}</button>
         </div>
         <p class="form-error" id="prediction-error" role="alert" data-form-error></p>
-        ${state.hint ? `<p class="hint-note"><span aria-hidden="true">↳</span>${escapeHtml(puzzle.nudge)}</p>` : ""}
+        <p class="hint-note" id="nudge-note" aria-live="polite" ${state.hint ? "" : "hidden"}><span aria-hidden="true">↳</span>${escapeHtml(puzzle.nudge)}</p>
       </form>
     </section>
     ${state.revealed && state.result ? resultMarkup(state, puzzle, state.result) : ""}
@@ -463,9 +463,13 @@ function bindPracticeEvents() {
     state.notice = "Puzzle restored.";
     renderRoute(false);
   });
-  document.querySelector<HTMLButtonElement>("[data-hint]")?.addEventListener("click", () => {
+  document.querySelector<HTMLButtonElement>("[data-hint]")?.addEventListener("click", (event) => {
     state.hint = !state.hint;
-    renderRoute(false);
+    const button = event.currentTarget as HTMLButtonElement;
+    const nudge = document.querySelector<HTMLElement>("#nudge-note");
+    button.textContent = state.hint ? "Hide the nudge" : "Show one nudge";
+    button.setAttribute("aria-expanded", String(state.hint));
+    if (nudge) nudge.hidden = !state.hint;
   });
   document.querySelector<HTMLFormElement>("[data-prediction]")?.addEventListener("submit", (event) => {
     event.preventDefault();
