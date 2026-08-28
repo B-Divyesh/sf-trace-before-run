@@ -30,6 +30,12 @@ npm run build
 
 The Playwright suite checks the complete prediction flow, incorrect answers, restricted syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout. The production build lands in `dist/` with `index.html` at its root.
 
+Run the same suite against the deployed product with:
+
+```sh
+PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test
+```
+
 ## Supported teaching grammar
 
 - Whole-number assignments with `+`, `-`, `*`, `//`, and `%`

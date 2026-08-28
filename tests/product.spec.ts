@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+const productOrigin = new URL(process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:4173").origin;
+
 test("landing explains the job and links to a ready demo", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Trace Before Run — predict Python output");
@@ -99,7 +101,7 @@ test("non-numeric final values show a format error before reveal", async ({ page
 test("@claim:demo-isolated keeps demo progress out of practice storage", async ({ page }) => {
   const externalRequests: string[] = [];
   page.on("request", (request) => {
-    if (new URL(request.url()).origin !== "http://127.0.0.1:4173") externalRequests.push(request.url());
+    if (new URL(request.url()).origin !== productOrigin) externalRequests.push(request.url());
   });
   await page.goto("/demo");
   await page.getByLabel("Final value of score").fill("8");
@@ -128,7 +130,7 @@ test("@claim:local-only keeps practice progress and answers in the browser", asy
   const keys = await page.evaluate(() => Object.keys(localStorage));
   expect(keys).toContain("real:trace-before-run:progress");
   expect(requests).toHaveLength(requestCountBeforeCommit);
-  expect(requests.every((request) => new URL(request.url).origin === "http://127.0.0.1:4173" && request.method === "GET")).toBe(true);
+  expect(requests.every((request) => new URL(request.url).origin === productOrigin && request.method === "GET")).toBe(true);
 });
 
 test("@claim:open-access starts practice without an account or payment", async ({ page }) => {
@@ -182,6 +184,10 @@ test("keyboard users can choose a path and commit", async ({ page }) => {
   await page.getByLabel("Final value of badge").fill("1");
   await page.getByLabel("Printed output").fill("8");
   await page.getByLabel("If path", { exact: true }).focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(page.getByLabel("Else path", { exact: true })).toBeChecked();
+  await page.keyboard.press("ArrowUp");
+  await expect(page.getByLabel("If path", { exact: true })).toBeChecked();
   await page.keyboard.press("Space");
   await page.getByRole("button", { name: "Commit my trace" }).focus();
   await page.keyboard.press("Enter");
