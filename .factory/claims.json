@@ -28,6 +28,13 @@
     "sandbox": "fresh browser context at /demo; commit a trace and inspect storage and network requests"
   },
   {
+    "id": "reset-demo",
+    "claim": "Reset demo returns the sample to its seeded state without changing practice progress.",
+    "where": "demo banner, README, demo documentation",
+    "test": "npm test -- --grep @claim:reset-demo",
+    "sandbox": "fresh browser context at /demo with a real-progress sentinel; create demo progress, reset, then inspect the seeded puzzle and both storage namespaces"
+  },
+  {
     "id": "local-only",
     "claim": "Practice progress stays in browser storage; code and answers are not sent to another origin.",
     "where": "landing facts, privacy page, README",

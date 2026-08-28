@@ -8,7 +8,7 @@ The editor interprets a small teaching grammar. It never executes arbitrary Pyth
 
 ## Try the demo
 
-Open [the sample-data demo](https://trace-before-run.sociobot.in/demo), or use `http://localhost:5173/demo` during local development. The demo starts on the “Add the badge” puzzle and stores progress under a separate `demo:` key. “Reset demo” returns to the seeded state.
+Open [the sample-data demo](https://trace-before-run.sociobot.in/demo), or use `http://localhost:5173/demo` during local development. The demo starts on the “Add the badge” puzzle and stores progress under a separate `demo:` key. “Reset demo” returns to the seeded state without changing practice progress.
 
 ## Run locally
 
@@ -28,7 +28,7 @@ npm test
 npm run build
 ```
 
-The Playwright suite checks the complete prediction flow, incorrect answers, restricted syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout. The production build lands in `dist/` with `index.html` at its root.
+The Playwright suite checks tracing, syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout. The production build lands in `dist/` with `index.html` at its root.
 
 Run the same suite against the deployed product with:
 

@@ -169,12 +169,21 @@ test("@claim:open-access starts practice without an account or payment", async (
   await expect(page.getByRole("button", { name: "Commit my trace" })).toBeVisible();
 });
 
-test("reset demo returns to the seeded puzzle", async ({ page }) => {
+test("@claim:reset-demo returns the seeded sample without changing practice progress", async ({ page }) => {
+  const realProgress = JSON.stringify({ current: 3, solved: ["sentinel"], attempts: 17 });
+  await page.addInitScript((value) => localStorage.setItem("real:trace-before-run:progress", value), realProgress);
   await page.goto("/demo");
+  await page.getByLabel("Final value of score").fill("8");
+  await page.getByLabel("Final value of badge").fill("1");
+  await page.getByLabel("Printed output").fill("8");
+  await page.getByLabel("If path", { exact: true }).check();
   await page.getByRole("button", { name: "Commit my trace" }).click();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("demo:trace-before-run:progress"))).not.toBeNull();
   await page.getByRole("button", { name: "Reset demo" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Add the badge");
   await expect(page.getByLabel("Final value of score")).toHaveValue("");
+  expect(await page.evaluate(() => localStorage.getItem("demo:trace-before-run:progress"))).toBeNull();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("real:trace-before-run:progress"))).toBe(realProgress);
 });
 
 test("the demo query alias opens the isolated sample", async ({ page }) => {

@@ -1,4 +1,4 @@
-# Landing copy audit
+# Copy audit
 
 Audited 28 August 2026. Counts treat hyphenated terms as one word. Headings and button labels are included because they must also scan clearly.
 
@@ -38,6 +38,13 @@ Audited 28 August 2026. Counts treat hyphenated terms as one word. Headings and 
 | Then inspect the trace. | 4 | Pass |
 
 No sentence exceeds 22 words. No banned word appears.
+
+## README sentences changed in polish 1
+
+| Copy | Words | Result |
+| --- | ---: | --- |
+| “Reset demo” returns to the seeded state without changing practice progress. | 11 | Pass; listed claim: `reset-demo` |
+| The Playwright suite checks tracing, syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout. | 18 | Pass |
 
 ## Terminology table
 
