@@ -5,8 +5,8 @@ Adversarial report: `958a014f7b01621cee89b014bdd2f361600a7789`.
 
 | Finding ID | Change made | Evidence |
 | --- | --- | --- |
-| F-1-1 | Rewrote the README test-suite sentence to “The Playwright suite checks tracing, syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout.” It is 18 words. | `.factory/copy-audit.md`; `CI=1 npm test` passes the complete suite. |
-| F-1-2 | Added the `reset-demo` claim to `.factory/claims.json`. The tagged browser test seeds real progress, creates demo progress, resets the demo, then proves the seeded puzzle returns, demo progress is gone, and real progress is byte-for-byte unchanged. The README now states that same observable behavior. | `npm test -- --grep @claim:reset-demo` — 1/1 passed; `CI=1 npm test` — 21/21 passed. |
+| F-1-1 | Rewrote the README test-suite sentence to “The Playwright suite checks tracing, syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout.” It is 18 words. | `.factory/copy-audit.md`; fresh-clone `CI=1 npm test` — 21/21 passed; published source at `03f2efc`. The cold live shell check passed at [the landing URL](https://trace-before-run.sociobot.in/), with evidence screenshot `.factory/evidence/polish-1-live/screenshot-desktop.png`. |
+| F-1-2 | Added the `reset-demo` claim to `.factory/claims.json`. The tagged browser test seeds real progress, creates demo progress, resets the demo, then proves the seeded puzzle returns, demo progress is gone, and real progress is byte-for-byte unchanged. The README now states that same observable behavior. | Fresh-clone and live `npm test -- --grep @claim:reset-demo` — 1/1 passed; fresh-clone `CI=1 npm test` — 21/21 passed. Cold live [demo](https://trace-before-run.sociobot.in/demo) check passed; screenshot `.factory/evidence/polish-1-live/demo/screenshot-desktop.png`. |
 
 ## Cumulative review check
 
