@@ -1,7 +1,9 @@
 # Polish 2 — cumulative finding closure
 
-Release base: `be5094cbf5947c70fa378ba50f3dc2cade6caf36`  
-Review report: `d29ace6c07be127d122a183778b506bbaed50dfe`  
+Release base: `be5094cbf5947c70fa378ba50f3dc2cade6caf36`
+
+Review report: `d29ace6c07be127d122a183778b506bbaed50dfe`
+
 Repair commit: `c30b6df85adcc01205c3b1eb45ed21b6e7d53e1b`
 
 ## Review finding map
