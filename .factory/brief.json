@@ -1,0 +1,31 @@
+{
+  "slug": "trace-before-run",
+  "title": "Trace Before Run",
+  "territory": "games-creative",
+  "user": "Beginning programming students who can write fragments of Python but struggle to apply logic and debug simple problems.",
+  "evidence": [
+    {
+      "url": "https://hn.algolia.com/api/v1/items/45071018",
+      "date": "2025-08-30",
+      "quote_or_summary": "Ask HN discussion about introducing a 13-year-old to programming emphasizes logic, branching, loops, decomposition, debugging, and self-correction before language preference."
+    },
+    {
+      "url": "https://cseducators.stackexchange.com/questions/8263/why-do-i-struggle-to-apply-python-logic-when-solving-basic-problems",
+      "date": "2025-06-09",
+      "quote_or_summary": "A Python learner directly reports difficulty applying logical thinking to basic exercises and homework."
+    }
+  ],
+  "recurrence": "A learner and an independent parent/educator discussion in 2025 point to the same early-stage transfer problem: syntax exposure does not create tracing or decomposition habits.",
+  "current_workaround": "Watch tutorials, ask an LLM for the answer, repeatedly run code, or copy solutions from practice sites.",
+  "incumbents_and_gap": "Python Tutor visualizes executions and coding platforms grade answers; the unresolved gap is a quick prediction-first drill where learners commit to a trace before seeing output.",
+  "smallest_useful_product": "Static browser game with short editable Python-like snippets, variable-table prediction, branch-path selection, reveal-after-commit, and original micro-puzzles. Non-goals: code execution for arbitrary input, accounts, ranking, or an AI hint bot.",
+  "success_measure": "After five sessions, 60% of test learners improve at least 20 percentage points on an unseen five-item trace quiz.",
+  "artifact_class": "static-web",
+  "monetization": "free — an open, linkable drill works best for teachers assigning it without procurement.",
+  "constraints": "Use a restricted hand-authored grammar rather than executing user code; meet keyboard and color-contrast requirements.",
+  "est_build_effort": "S",
+  "why_distinct": "Prediction before execution is the product mechanic; it is neither a generic code playground nor an answer-generating tutor.",
+  "confidence": 5,
+  "state": "RESEARCHED",
+  "summary": "Predict Python traces before you run them"
+}
