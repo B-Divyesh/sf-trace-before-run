@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-08-28T16:35:07.950Z",
+  "home": {
+    "title": "Trace Before Run — predict Python output",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "actionBox": {
+      "x": 130,
+      "y": 599.25,
+      "width": 545.296875,
+      "height": 48.796875
+    },
+    "actionBottom": 648.046875,
+    "lastFactBox": {
+      "x": 130,
+      "y": 753.640625,
+      "width": 545.296875,
+      "height": 24.796875
+    },
+    "lastFactBottom": 778.4375,
+    "consoleErrors": []
+  },
+  "demo": {
+    "title": "Demo — Trace Before Run",
+    "banner": "Demo — sample data, nothing is savedReset demoStart for real",
+    "score": "",
+    "demoProgress": null,
+    "realProgress": "{\"sentinel\":\"real-record\"}",
+    "cookies": "",
+    "beacons": [],
+    "externalRequests": [],
+    "nonGetRequests": []
+  },
+  "missing": {
+    "status": 404,
+    "title": "Page not found — Trace Before Run",
+    "h1": "This path has no next line",
+    "returnHref": "/"
+  }
+}

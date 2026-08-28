@@ -55,7 +55,7 @@ No sentence exceeds 22 words. No banned word appears.
 | “Reset demo” returns to the seeded state without changing practice progress. | 11 | Pass; listed claim: `reset-demo` |
 | staticwebapp.config.json supplies route rewrites, the real 404 response, security headers, and cache rules. | 13 | Pass |
 | There are no accounts, analytics, third-party runtime scripts, or remote code execution. | 12 | Pass; listed claims: `open-access`, `no-tracking`, `restricted-grammar` |
-| Practice Python tracing by predicting values before reveal. | 8 | Pass; catalog description starts with a verb and is 57 characters. |
+| Practice Python tracing by predicting values before reveal. | 8 | Pass; catalog description starts with a verb and is 59 characters. |
 
 ## Terminology table
 
