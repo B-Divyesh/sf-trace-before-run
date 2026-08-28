@@ -1,0 +1,51 @@
+[
+  {
+    "id": "prediction-reveal",
+    "claim": "Learners commit a variable, path, and output prediction before the line trace appears.",
+    "where": "landing preview and practice workbench",
+    "test": "npm test -- --grep @claim:prediction-reveal",
+    "sandbox": "fresh browser context at /demo with the seeded badge puzzle"
+  },
+  {
+    "id": "restricted-grammar",
+    "claim": "The editor accepts only the small teaching grammar and does not execute arbitrary Python.",
+    "where": "landing boundaries and editor note",
+    "test": "npm test -- --grep @claim:restricted-grammar",
+    "sandbox": "fresh browser context at /demo; replace the snippet with an unsupported import"
+  },
+  {
+    "id": "demo-isolated",
+    "claim": "Demo data is stored separately and no practice data is read or written.",
+    "where": "demo banner, privacy page, README",
+    "test": "npm test -- --grep @claim:demo-isolated",
+    "sandbox": "fresh browser context at /demo; commit a trace and inspect storage and network requests"
+  },
+  {
+    "id": "open-access",
+    "claim": "The complete practice is free and needs no account.",
+    "where": "landing facts, hero action, README",
+    "test": "npm test -- --grep @claim:open-access",
+    "sandbox": "fresh browser context at /play; assert the first puzzle and commit action are available with no password input"
+  },
+  {
+    "id": "first-difference",
+    "claim": "A wrong prediction explains the first differing final field.",
+    "where": "landing how-it-works section, README",
+    "test": "npm test -- --grep @claim:first-difference",
+    "sandbox": "fresh browser context at /demo; commit one deliberately wrong variable and inspect the reveal"
+  },
+  {
+    "id": "five-puzzles",
+    "claim": "The practice session contains five tracing puzzles.",
+    "where": "landing, practice progress, README",
+    "test": "npm test -- --grep @claim:five-puzzles",
+    "sandbox": "fresh browser context at /play; solve all five bundled puzzles and assert the completed-session result"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after the first visit.",
+    "where": "landing facts, README",
+    "test": "npm test -- --grep @claim:offline-reload",
+    "sandbox": "fresh browser context at /demo; wait for the service worker, reload once, then reload offline"
+  }
+]
