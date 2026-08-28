@@ -35,6 +35,13 @@
     "sandbox": "fresh browser context at /demo with a real-progress sentinel; create demo progress, reset, then inspect the seeded puzzle and both storage namespaces"
   },
   {
+    "id": "clear-progress",
+    "claim": "Clear saved progress removes both practice and demo progress from this browser.",
+    "where": "landing boundaries and privacy page",
+    "test": "npm test -- --grep @claim:clear-progress",
+    "sandbox": "fresh browser context at /?demo=1 with both storage namespaces seeded; open Privacy, clear progress, inspect both keys and the status message, and assert every request is same-origin GET"
+  },
+  {
     "id": "local-only",
     "claim": "Practice progress stays in browser storage; code and answers are not sent to another origin.",
     "where": "landing facts, privacy page, README",

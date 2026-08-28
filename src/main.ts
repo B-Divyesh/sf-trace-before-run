@@ -27,6 +27,12 @@ if (!app) throw new Error("App root is missing.");
 
 let practiceState: PracticeState | null = null;
 let lastRoute = "";
+let scrollSaveFrame = 0;
+
+type RouteHistoryState = {
+  scrollX: number;
+  scrollY: number;
+};
 
 const escapeHtml = (value: string) => value
   .replaceAll("&", "&amp;")
@@ -173,7 +179,7 @@ function landingPage() {
     </section>
     <section class="how section-shell" aria-labelledby="how-title">
       <div class="section-number" aria-hidden="true">02 / Trace</div>
-      <h2 id="how-title">Three moves build the habit</h2>
+      <h2 id="how-title">Trace in three moves</h2>
       <ol class="steps">
         <li><span>Read</span><div><h3>Read one line at a time</h3><p>Keep the current value beside each variable.</p></div></li>
         <li><span>Commit</span><div><h3>Commit your full prediction</h3><p>Choose the branch and printed output before any result appears.</p></div></li>
@@ -367,9 +373,24 @@ function notFoundPage() {
     </section>`);
 }
 
+function historyPosition(state: unknown): RouteHistoryState {
+  if (!state || typeof state !== "object") return { scrollX: 0, scrollY: 0 };
+  const candidate = state as Partial<RouteHistoryState>;
+  return {
+    scrollX: Number.isFinite(candidate.scrollX) ? Number(candidate.scrollX) : 0,
+    scrollY: Number.isFinite(candidate.scrollY) ? Number(candidate.scrollY) : 0,
+  };
+}
+
+function saveHistoryPosition() {
+  history.replaceState({ ...history.state, scrollX: window.scrollX, scrollY: window.scrollY }, "");
+}
+
 function navigate(href: string) {
-  history.pushState({}, "", href);
-  renderRoute(true);
+  cancelAnimationFrame(scrollSaveFrame);
+  saveHistoryPosition();
+  history.pushState({ scrollX: 0, scrollY: 0 } satisfies RouteHistoryState, "", href);
+  renderRoute(true, { scrollX: 0, scrollY: 0 });
 }
 
 function bindCommonEvents() {
@@ -542,7 +563,7 @@ function bindPageEvents() {
   });
 }
 
-function renderRoute(focusHeading = false) {
+function renderRoute(focusHeading = false, position?: RouteHistoryState) {
   const path = routePath();
   if (path !== lastRoute && path !== "/play" && path !== "/demo") practiceState = null;
   lastRoute = path;
@@ -556,13 +577,25 @@ function renderRoute(focusHeading = false) {
   bindPageEvents();
   if (focusHeading) {
     const heading = document.querySelector<HTMLHeadingElement>("h1");
-    heading?.focus();
     const status = document.querySelector<HTMLElement>("#route-status");
-    if (status && heading) status.textContent = heading.textContent;
+    requestAnimationFrame(() => {
+      if (position) window.scrollTo({ left: position.scrollX, top: position.scrollY, behavior: "instant" });
+      heading?.focus({ preventScroll: true });
+      if (status && heading) status.textContent = heading.textContent;
+    });
   }
 }
 
-window.addEventListener("popstate", () => renderRoute(true));
+history.scrollRestoration = "manual";
+history.replaceState({ ...history.state, scrollX: window.scrollX, scrollY: window.scrollY }, "");
+window.addEventListener("scroll", () => {
+  cancelAnimationFrame(scrollSaveFrame);
+  scrollSaveFrame = requestAnimationFrame(saveHistoryPosition);
+}, { passive: true });
+window.addEventListener("popstate", (event) => {
+  cancelAnimationFrame(scrollSaveFrame);
+  renderRoute(true, historyPosition(event.state));
+});
 renderRoute();
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {

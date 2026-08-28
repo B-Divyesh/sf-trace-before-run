@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { readFileSync } from "node:fs";
 
 const productOrigin = new URL(process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:4173").origin;
 const canonicalOrigin = "https://trace-before-run.sociobot.in";
@@ -14,6 +15,17 @@ test("landing explains the job and links to a ready demo", async ({ page }) => {
   await expect(page).toHaveURL(/\/?\?demo=1$/);
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Editable Python-like snippet" })).toHaveValue(/score = 7/);
+});
+
+test("review copy states facts without unverified efficacy or provenance wording", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Trace in three moves" })).toBeVisible();
+  const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+  expect(readme).toContain("Five puzzles ask for final variable values, the branch path, and printed output.");
+  expect(readme).not.toContain("Five original puzzles");
+  const catalog = readFileSync(new URL("../.factory/catalog-description.txt", import.meta.url), "utf8").trim();
+  expect(catalog).toBe("Practice Python traces by predicting values, paths, and output before the reveal.");
+  expect(catalog.length).toBeLessThanOrEqual(120);
 });
 
 test("@claim:prediction-reveal commits before showing a line trace", async ({ page }) => {
@@ -233,6 +245,25 @@ test("@claim:reset-demo returns the seeded sample without changing practice prog
   await expect.poll(() => page.evaluate(() => localStorage.getItem("real:trace-before-run:progress"))).toBe(realProgress);
 });
 
+test("@claim:clear-progress removes practice and demo progress from this browser", async ({ page }) => {
+  const requests: { url: string; method: string }[] = [];
+  page.on("request", (request) => requests.push({ url: request.url(), method: request.method() }));
+  await page.addInitScript(() => {
+    localStorage.setItem("real:trace-before-run:progress", JSON.stringify({ current: 4, solved: ["real"], attempts: 7 }));
+    localStorage.setItem("demo:trace-before-run:progress", JSON.stringify({ current: 2, solved: ["demo"], attempts: 3 }));
+  });
+  await page.goto("/?demo=1");
+  await page.getByRole("link", { name: "Privacy", exact: true }).first().click();
+  await page.getByRole("button", { name: "Clear saved progress" }).click();
+
+  expect(await page.evaluate(() => ({
+    practice: localStorage.getItem("real:trace-before-run:progress"),
+    demo: localStorage.getItem("demo:trace-before-run:progress"),
+  }))).toEqual({ practice: null, demo: null });
+  await expect(page.getByRole("status")).toHaveText("Saved progress was cleared from this browser.");
+  expect(requests.every(({ url, method }) => new URL(url).origin === productOrigin && method === "GET")).toBe(true);
+});
+
 test("the demo query alias opens the isolated sample", async ({ page }) => {
   await page.goto("/?demo=1");
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
@@ -287,6 +318,31 @@ test("routes set their own metadata, restore focus, and serve a real 404", async
   const footer = page.getByRole("navigation", { name: "Footer navigation" });
   await expect(footer.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
   await expect(footer.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
+});
+
+test("mobile Back and Forward restore each route's scroll position and heading focus", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const practiceLink = page.getByRole("link", { name: "Start the five puzzles" });
+  await practiceLink.scrollIntoViewIfNeeded();
+  const landingScroll = await page.evaluate(() => window.scrollY);
+  expect(landingScroll).toBeGreaterThan(500);
+  await practiceLink.click();
+  await expect(page).toHaveURL(/\/play$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await page.evaluate(() => window.scrollTo({ top: 420, behavior: "instant" }));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(420);
+  const practiceScroll = await page.evaluate(() => window.scrollY);
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await expect.poll(() => page.evaluate((expected) => Math.abs(window.scrollY - expected), landingScroll)).toBeLessThanOrEqual(2);
+
+  await page.goForward();
+  await expect(page).toHaveURL(/\/play$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await expect.poll(() => page.evaluate((expected) => Math.abs(window.scrollY - expected), practiceScroll)).toBeLessThanOrEqual(2);
 });
 
 test("@claim:five-puzzles completes a five-item practice session", async ({ page }) => {

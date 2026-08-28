@@ -2,7 +2,7 @@
 
 Predict short Python traces before seeing the result.
 
-Trace Before Run is a free browser drill for beginning Python learners. Five original puzzles ask for final variable values, the branch path, and printed output. The learner commits a prediction before the line-by-line trace appears. A wrong answer points to the first differing final field.
+Trace Before Run is a free browser drill for beginning Python learners. Five puzzles ask for final variable values, the branch path, and printed output. The learner commits a prediction before the line-by-line trace appears. A wrong answer points to the first differing final field.
 
 The editor interprets a small teaching grammar. It never executes arbitrary Python. Practice progress stays in browser storage, and the app works offline after the first visit.
 
