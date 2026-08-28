@@ -8,7 +8,7 @@ The editor interprets a small teaching grammar. It never executes arbitrary Pyth
 
 ## Try the demo
 
-Open [the sample-data demo](https://trace-before-run.sociobot.in/demo), or use `http://localhost:5173/demo` during local development. The demo starts on the “Add the badge” puzzle and stores progress under a separate `demo:` key. “Reset demo” returns to the seeded state without changing practice progress.
+Open [the sample-data demo](https://trace-before-run.sociobot.in/?demo=1), or use `http://localhost:5173/?demo=1` during local development. The demo starts on the “Add the badge” puzzle and stores progress under a separate `demo:` key. “Reset demo” returns to the seeded state without changing practice progress.
 
 ## Run locally
 
@@ -47,7 +47,7 @@ This is deliberately not a Python runtime. Accounts, rankings, arbitrary code ex
 
 ## Deploy
 
-Build with `npm run build` and publish `dist/` as an Azure Static Web App. `staticwebapp.config.json` supplies the SPA fallback, security headers, and cache rules. The factory manages infrastructure and DNS.
+Build with `npm run build` and publish `dist/` as an Azure Static Web App. `staticwebapp.config.json` supplies route rewrites, the real 404 response, security headers, and cache rules. The factory manages infrastructure and DNS.
 
 ## Privacy and license
 

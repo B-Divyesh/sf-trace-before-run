@@ -273,7 +273,7 @@ h3 {
 .hero {
   display: grid;
   min-height: min(780px, calc(100vh - 80px));
-  grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
   align-items: center;
   gap: 32px;
   padding-top: 56px;
@@ -390,6 +390,7 @@ h3 {
 }
 
 .hero-scene img {
+  height: auto;
   aspect-ratio: 3 / 2;
   object-fit: cover;
 }

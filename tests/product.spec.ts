@@ -2,13 +2,16 @@ import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 const productOrigin = new URL(process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:4173").origin;
+const canonicalOrigin = "https://trace-before-run.sociobot.in";
 
 test("landing explains the job and links to a ready demo", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Trace Before Run — predict Python output");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Predict Python before you run it");
-  await page.getByRole("link", { name: "Try it with sample data" }).click();
-  await expect(page).toHaveURL(/\/demo$/);
+  const demoLink = page.getByRole("link", { name: "Try it with sample data" });
+  await expect(demoLink).toHaveAttribute("href", "/?demo=1");
+  await demoLink.click();
+  await expect(page).toHaveURL(/\/?\?demo=1$/);
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Editable Python-like snippet" })).toHaveValue(/score = 7/);
 });
@@ -132,7 +135,9 @@ test("@claim:demo-isolated keeps demo progress out of practice storage", async (
   page.on("request", (request) => {
     if (new URL(request.url()).origin !== productOrigin) externalRequests.push(request.url());
   });
-  await page.goto("/demo");
+  const realProgress = JSON.stringify({ current: 4, solved: ["real-sentinel"], attempts: 9 });
+  await page.addInitScript((value) => localStorage.setItem("real:trace-before-run:progress", value), realProgress);
+  await page.goto("/?demo=1");
   await page.getByLabel("Final value of score").fill("8");
   await page.getByLabel("Final value of badge").fill("1");
   await page.getByLabel("Printed output").fill("8");
@@ -140,8 +145,50 @@ test("@claim:demo-isolated keeps demo progress out of practice storage", async (
   await page.getByRole("button", { name: "Commit my trace" }).click();
   const keys = await page.evaluate(() => Object.keys(localStorage));
   expect(keys).toContain("demo:trace-before-run:progress");
-  expect(keys).not.toContain("real:trace-before-run:progress");
+  expect(await page.evaluate(() => localStorage.getItem("real:trace-before-run:progress"))).toBe(realProgress);
   expect(externalRequests).toEqual([]);
+});
+
+test("@claim:no-tracking runs a complete demo without analytics or tracking", async ({ page, context }) => {
+  const requests: { url: string; method: string; resourceType: string }[] = [];
+  page.on("request", (request) => requests.push({
+    url: request.url(),
+    method: request.method(),
+    resourceType: request.resourceType(),
+  }));
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "__trackingEvidence", { value: { beacons: [] as string[] }, configurable: false });
+    Object.defineProperty(navigator, "sendBeacon", {
+      value: (url: string | URL) => {
+        (window as typeof window & { __trackingEvidence: { beacons: string[] } }).__trackingEvidence.beacons.push(String(url));
+        return true;
+      },
+      configurable: true,
+    });
+  });
+  await page.goto("/?demo=1");
+  await page.getByLabel("Final value of score").fill("8");
+  await page.getByLabel("Final value of badge").fill("1");
+  await page.getByLabel("Printed output").fill("8");
+  await page.getByLabel("If path", { exact: true }).check();
+  await page.getByRole("button", { name: "Commit my trace" }).click();
+  await expect(page.getByText("Trace matched")).toBeVisible();
+
+  const evidence = await page.evaluate(() => ({
+    beacons: (window as typeof window & { __trackingEvidence: { beacons: string[] } }).__trackingEvidence.beacons,
+    cookies: document.cookie,
+    storageKeys: Object.keys(localStorage),
+  }));
+  const allowedPaths = [/^\/$/, /^\/assets\//, /^\/sw\.js$/, /^\/favicon\.svg$/, /^\/manifest\.webmanifest$/];
+  expect(evidence.beacons).toEqual([]);
+  expect(evidence.cookies).toBe("");
+  expect(evidence.storageKeys).toEqual(["demo:trace-before-run:progress"]);
+  expect(requests.length).toBeGreaterThan(0);
+  expect(requests.every(({ url, method }) => {
+    const parsed = new URL(url);
+    return parsed.origin === productOrigin && method === "GET" && allowedPaths.some((pattern) => pattern.test(parsed.pathname));
+  })).toBe(true);
+  expect(await context.cookies()).toEqual([]);
 });
 
 test("@claim:local-only keeps practice progress and answers in the browser", async ({ page }) => {
@@ -172,7 +219,7 @@ test("@claim:open-access starts practice without an account or payment", async (
 test("@claim:reset-demo returns the seeded sample without changing practice progress", async ({ page }) => {
   const realProgress = JSON.stringify({ current: 3, solved: ["sentinel"], attempts: 17 });
   await page.addInitScript((value) => localStorage.setItem("real:trace-before-run:progress", value), realProgress);
-  await page.goto("/demo");
+  await page.goto("/?demo=1");
   await page.getByLabel("Final value of score").fill("8");
   await page.getByLabel("Final value of badge").fill("1");
   await page.getByLabel("Printed output").fill("8");
@@ -190,6 +237,56 @@ test("the demo query alias opens the isolated sample", async ({ page }) => {
   await page.goto("/?demo=1");
   await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Add the badge");
+});
+
+test("desktop first screen keeps the action and all three facts inside 1440 by 900", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const action = page.locator(".hero-action");
+  await expect(action).toBeVisible();
+  const box = await action.boundingBox();
+  expect(box).not.toBeNull();
+  expect((box?.y || 0) + (box?.height || 0)).toBeLessThanOrEqual(await page.evaluate(() => window.innerHeight));
+  const facts = page.locator(".plain-facts li");
+  await expect(facts).toHaveCount(3);
+  const lastFactBox = await facts.last().boundingBox();
+  expect(lastFactBox).not.toBeNull();
+  expect((lastFactBox?.y || 0) + (lastFactBox?.height || 0)).toBeLessThanOrEqual(await page.evaluate(() => window.innerHeight));
+});
+
+test("routes set their own metadata, restore focus, and serve a real 404", async ({ page, request }) => {
+  const routes = [
+    { path: "/", title: "Trace Before Run — predict Python output", canonical: "/" },
+    { path: "/demo", title: "Demo — Trace Before Run", canonical: "/demo" },
+    { path: "/play", title: "Practice — Trace Before Run", canonical: "/play" },
+    { path: "/privacy", title: "Privacy — Trace Before Run", canonical: "/privacy" },
+    { path: "/terms", title: "Terms — Trace Before Run", canonical: "/terms" },
+  ];
+  for (const route of routes) {
+    await page.goto(route.path);
+    await expect(page).toHaveTitle(route.title);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `${canonicalOrigin}${route.canonical}`);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /.+/);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", route.title);
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute("content", route.title);
+  }
+
+  await page.goto("/");
+  await page.getByRole("link", { name: "Try it with sample data" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await page.goBack();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Predict Python before you run it");
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+
+  const missing = await request.get("/not-a-real-route", { headers: { Accept: "text/html" } });
+  expect(missing.status()).toBe(404);
+  await page.goto("/not-a-real-route");
+  await expect(page).toHaveTitle("Page not found — Trace Before Run");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("This path has no next line");
+  await expect(page.getByRole("link", { name: "Return to the first step" })).toHaveAttribute("href", "/");
+  const footer = page.getByRole("navigation", { name: "Footer navigation" });
+  await expect(footer.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
+  await expect(footer.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
 });
 
 test("@claim:five-puzzles completes a five-item practice session", async ({ page }) => {
@@ -269,7 +366,7 @@ test("service worker update activates the current cache and removes a stale cach
   });
   expect(state.active).toBe(true);
   expect(state.waiting).toBe(true);
-  expect(state.caches).toContain("trace-before-run-v2");
+  expect(state.caches).toContain("trace-before-run-v3");
   expect(state.caches).not.toContain("trace-before-run-v1");
 });
 

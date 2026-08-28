@@ -1,0 +1,22 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "actionBox": {
+    "x": 130,
+    "y": 599.25,
+    "width": 545.296875,
+    "height": 48.796875
+  },
+  "actionBottom": 648.046875,
+  "lastFactBox": {
+    "x": 130,
+    "y": 753.640625,
+    "width": 545.296875,
+    "height": 24.796875
+  },
+  "lastFactBottom": 778.4375,
+  "missingStatus": 404,
+  "missingTitle": "Page not found — Trace Before Run"
+}

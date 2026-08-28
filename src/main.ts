@@ -78,11 +78,15 @@ function freshPracticeState(demo: boolean): PracticeState {
 }
 
 function setMeta(title: string, description: string, canonicalPath: string) {
+  const canonical = `https://trace-before-run.sociobot.in${canonicalPath}`;
   document.title = title;
   document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", description);
   document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute("content", title);
   document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute("content", description);
-  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute("href", `https://trace-before-run.sociobot.in${canonicalPath}`);
+  document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute("content", canonical);
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')?.setAttribute("content", title);
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]')?.setAttribute("content", description);
+  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute("href", canonical);
 }
 
 function iconMark() {
@@ -125,7 +129,7 @@ function landingPage() {
         <h1 tabindex="-1">Predict Python before you run it</h1>
         <p class="lede">For new Python learners who know syntax but lose track of changing values.</p>
         <div class="hero-action">
-          <a class="button button-primary" href="/demo" data-link>Try it with sample data</a>
+          <a class="button button-primary" href="/?demo=1" data-link>Try it with sample data</a>
           <span>Loads a ready branch puzzle. No sign-in.</span>
         </div>
         <ul class="plain-facts" aria-label="Product facts">
@@ -373,7 +377,7 @@ function bindCommonEvents() {
     link.addEventListener("click", (event) => {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
-      navigate(link.pathname);
+      navigate(`${link.pathname}${link.search}${link.hash}`);
     });
   });
   document.querySelector<HTMLButtonElement>(".theme-toggle")?.addEventListener("click", () => {

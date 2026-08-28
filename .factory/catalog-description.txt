@@ -1,1 +1,1 @@
-Predict Python traces before you run them.
+Practice Python tracing by predicting values before reveal.

@@ -42,6 +42,13 @@
     "sandbox": "fresh browser context at /play; complete the first trace, inspect the real storage key, and assert every request is same-origin GET"
   },
   {
+    "id": "no-tracking",
+    "claim": "No analytics, ads, tracking cookies, or third-party runtime requests are used.",
+    "where": "privacy page and README",
+    "test": "npm test -- --grep @claim:no-tracking",
+    "sandbox": "fresh browser context at /?demo=1; record requests, beacons, cookies, and storage through a completed sample trace"
+  },
+  {
     "id": "open-access",
     "claim": "The complete practice is free and needs no account.",
     "where": "landing facts, hero action, README",

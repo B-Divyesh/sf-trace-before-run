@@ -1,6 +1,6 @@
 # Copy audit
 
-Audited 28 August 2026. Counts treat hyphenated terms as one word. Headings and button labels are included because they must also scan clearly.
+Audited 28 August 2026 for polish round 2. Counts treat hyphenated terms as one word. Headings and button labels are included because they must also scan clearly.
 
 | Copy | Words | Result |
 | --- | ---: | --- |
@@ -45,6 +45,17 @@ No sentence exceeds 22 words. No banned word appears.
 | --- | ---: | --- |
 | “Reset demo” returns to the seeded state without changing practice progress. | 11 | Pass; listed claim: `reset-demo` |
 | The Playwright suite checks tracing, syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout. | 18 | Pass |
+
+## Copy checked in polish 2
+
+| Copy | Words | Result |
+| --- | ---: | --- |
+| Open the sample-data demo, or use the local sample URL during local development. | 12 | Pass |
+| The demo starts on the “Add the badge” puzzle and stores progress under a separate demo key. | 17 | Pass; listed claim: `demo-isolated` |
+| “Reset demo” returns to the seeded state without changing practice progress. | 11 | Pass; listed claim: `reset-demo` |
+| staticwebapp.config.json supplies route rewrites, the real 404 response, security headers, and cache rules. | 13 | Pass |
+| There are no accounts, analytics, third-party runtime scripts, or remote code execution. | 12 | Pass; listed claims: `open-access`, `no-tracking`, `restricted-grammar` |
+| Practice Python tracing by predicting values before reveal. | 8 | Pass; catalog description starts with a verb and is 57 characters. |
 
 ## Terminology table
 

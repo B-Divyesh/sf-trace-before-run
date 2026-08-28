@@ -1,10 +1,12 @@
-const CACHE = "trace-before-run-v2";
+const CACHE = "trace-before-run-v3";
 const SHELL = [
   "/",
   "/demo",
   "/play",
   "/privacy",
   "/terms",
+  "/404.html",
+  "/404.css",
   "/assets/hero-720.webp",
   "/assets/hero-1440.webp",
   "/assets/hero-fallback.jpg",
