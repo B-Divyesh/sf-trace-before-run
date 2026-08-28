@@ -68,7 +68,7 @@ The landing hero uses one original raster illustration. It carries atmosphere on
 
 ### Provenance
 
-The final asset will be generated for this product with the factory image model (`factory-image`) on 2026-08-28 using the prompt above. Source candidates and prompt metadata live in `public/assets/src/`. Production WebP/AVIF derivatives are created locally. Generated imagery is original for this product and contains no third-party marks.
+The final asset was generated for this product with the factory image model (`factory-image`) on 2026-08-28 using the prompt above. Source candidates and prompt metadata live in `assets/src/`. Production WebP/AVIF derivatives were created locally. Generated imagery is original for this product and contains no third-party marks.
 
 ## Accessibility and performance intent
 

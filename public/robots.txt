@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://trace-before-run.sociobot.in/sitemap.xml
