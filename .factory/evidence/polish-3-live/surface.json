@@ -1,0 +1,102 @@
+{
+  "checkedAt": "2026-08-28T17:45:33.336Z",
+  "pages": [
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Trace Before Run — predict Python output",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://trace-before-run.sociobot.in/"
+    },
+    {
+      "route": "/?demo=1",
+      "status": 200,
+      "title": "Demo — Trace Before Run",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://trace-before-run.sociobot.in/demo"
+    },
+    {
+      "route": "/demo",
+      "status": 200,
+      "title": "Demo — Trace Before Run",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://trace-before-run.sociobot.in/demo"
+    },
+    {
+      "route": "/play",
+      "status": 200,
+      "title": "Practice — Trace Before Run",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://trace-before-run.sociobot.in/play"
+    },
+    {
+      "route": "/privacy",
+      "status": 200,
+      "title": "Privacy — Trace Before Run",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://trace-before-run.sociobot.in/privacy"
+    },
+    {
+      "route": "/terms",
+      "status": 200,
+      "title": "Terms — Trace Before Run",
+      "h1": 1,
+      "main": 1,
+      "canonical": "https://trace-before-run.sociobot.in/terms"
+    }
+  ],
+  "discoveredStatuses": {
+    "/": 200,
+    "/?demo=1": 200,
+    "/apple-touch-icon.png": 200,
+    "/assets/hero-fallback.jpg": 200,
+    "/assets/index-BEcsAq1w.js": 200,
+    "/assets/social-preview.jpg": 200,
+    "/demo": 200,
+    "/favicon.svg": 200,
+    "/manifest.webmanifest": 200,
+    "/play": 200,
+    "/privacy": 200,
+    "/robots.txt": 200,
+    "/sitemap.xml": 200,
+    "/terms": 200
+  },
+  "unknownRouteStatus": 404,
+  "securityHeaders": {
+    "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "permissions-policy": "camera=(), microphone=(), geolocation=()"
+  },
+  "deployedHashes": {
+    "index.html": {
+      "local": "bca46c42ea77e16dda192d44755f50a8d0b10642b02d52f8db01a99908d4b64c",
+      "live": "bca46c42ea77e16dda192d44755f50a8d0b10642b02d52f8db01a99908d4b64c",
+      "match": true,
+      "bytes": 1883
+    },
+    "assets/index-BEcsAq1w.js": {
+      "local": "bcdc24aec18e429b0238fbca8f6aa073381ed10ca189fbbd262c78753077ee18",
+      "live": "bcdc24aec18e429b0238fbca8f6aa073381ed10ca189fbbd262c78753077ee18",
+      "match": true,
+      "bytes": 30464
+    },
+    "assets/index-x8kGLZ5a.css": {
+      "local": "b07bd63b2b346907ef886ee332ecc383ada897d87768da850f4bf148a69d421b",
+      "live": "b07bd63b2b346907ef886ee332ecc383ada897d87768da850f4bf148a69d421b",
+      "match": true,
+      "bytes": 16733
+    },
+    "sw.js": {
+      "local": "b11157881184f73a1dfdfc0751b492398586daf87fd03b38c5f41f650bbf628c",
+      "live": "b11157881184f73a1dfdfc0751b492398586daf87fd03b38c5f41f650bbf628c",
+      "match": true,
+      "bytes": 1356
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "deploymentId": "527deedc-93af-4cb5-a489-cd0f153f047a",
+  "checkedAt": "2026-08-28T17:43:47.473Z",
+  "firstScreen": {
+    "title": "Trace Before Run — predict Python output",
+    "headline": "Predict Python before you run it",
+    "audience": "For new Python learners who know syntax but lose track of changing values.",
+    "action": "Try it with sample data",
+    "actionBottom": 547.296875,
+    "finalFactBottom": 677.6875,
+    "viewportHeight": 844,
+    "hasHorizontalOverflow": false
+  },
+  "history": {
+    "landingBefore": 2184,
+    "landingAfter": 2184,
+    "practiceBefore": 420,
+    "practiceAfter": 420,
+    "headingFocusedAfterForward": true,
+    "errors": []
+  },
+  "demo": {
+    "heroHref": "/?demo=1",
+    "afterReset": {
+      "url": "/?demo=1",
+      "banner": "Demo — sample data, nothing is savedReset demoStart for real",
+      "h1": "Add the badge",
+      "score": "",
+      "demo": null,
+      "real": "{\"current\":4,\"solved\":[\"real-sentinel\"],\"attempts\":9}"
+    },
+    "externalOrNonGetRequests": []
+  },
+  "clearProgress": {
+    "keys": [],
+    "status": "Saved progress was cleared from this browser.",
+    "title": "Privacy — Trace Before Run",
+    "externalOrNonGetRequests": []
+  },
+  "notFound": {
+    "status": 404,
+    "title": "Page not found — Trace Before Run",
+    "h1": "This path has no next line",
+    "privacyHref": "/privacy",
+    "termsHref": "/terms"
+  },
+  "copy": {
+    "howHeading": "Trace in three moves"
+  }
+}

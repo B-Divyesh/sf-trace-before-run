@@ -1,0 +1,14 @@
+{
+  "url": "https://trace-before-run.sociobot.in/privacy",
+  "loadMs": 550,
+  "errors": [],
+  "a11y": {
+    "title": "Privacy — Trace Before Run",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imgsMissingAlt": 0,
+    "buttonsUnlabeled": 0,
+    "textLength": 744
+  }
+}
