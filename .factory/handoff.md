@@ -1,68 +1,43 @@
-# Trace Before Run — polish 1 handoff
+# Trace Before Run — adversarial review 2 handoff
 
-## Result: PASS — repair deployed and rechecked cold
+## Result: FAIL — three review findings recorded
 
-This repair closes both findings in `.factory/review-1.md`:
+No product code was changed. .factory/review-2.md records the full cold-read,
+copy, demo, claims, privacy, history, structure, accessibility, and leverage
+review.
 
-- `F-1-1`: the README test-suite sentence is now 18 words. The count is in
-  `.factory/copy-audit.md`.
-- `F-1-2`: reset is now the declared `reset-demo` claim. Its tagged test proves
-  reset restores the seeded sample, removes only demo progress, and leaves a
-  real-progress sentinel byte-for-byte unchanged.
+Remaining findings:
 
-`.factory/polish-1.md` maps each finding to its change and evidence. The
-catalog description is the verb-first sentence “Predict Python traces before
-you run them.”
+- F-2-1: the desktop landing action ends 1.95 px below a 1440 × 900 initial
+  viewport.
+- F-2-2: README says there is no analytics collection, but no declared claim
+  and tagged test covers that promise.
+- F-2-3: unknown routes render the designed missing-page view but respond with
+  HTTP 200 rather than HTTP 404.
 
-Repair commit: `03f2efc07a9b74662bd1d4384eea14a4fec355ed`
-(`fix: close review copy and demo reset claims`), pushed to `origin/main`.
+## Verification performed
 
-## Clean-clone verification evidence
+From a clean clone at be5094cbf5947c70fa378ba50f3dc2cade6caf36:
 
-- Fresh clone: `/tmp/trace-before-run-clean.YhPp0c` at the repair commit.
-- `npm ci`: PASS; 22 packages installed and npm reported zero vulnerabilities.
-- Every manifest claim command was invoked separately after installation;
-  every command passed 1/1:
-  `prediction-reveal`, `restricted-grammar`, `editable-trace`,
-  `demo-isolated`, `reset-demo`, `local-only`, `open-access`,
-  `first-difference`, `five-puzzles`, and `offline-reload`. Each passed 1/1.
-- `CI=1 npm test`: PASS, 21/21 Playwright tests. This includes keyboard,
-  route/focus, dark mode, 390 px, offline, privacy/network, and axe serious /
-  critical coverage.
-- `npm run build`: PASS; strict TypeScript plus Vite produced `dist/index.html`.
-  Build output: JavaScript 29.44 KB raw / 10.13 KB gzip; CSS 16.72 KB raw /
-  4.64 KB gzip. Both are within the static-web budget.
-- `git diff --check`: PASS before the repair commit.
+    npm ci
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:prediction-reveal
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:restricted-grammar
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:editable-trace
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:demo-isolated
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:reset-demo
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:local-only
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:open-access
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:first-difference
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:five-puzzles
+    PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test -- --grep @claim:offline-reload
+    CI=1 PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test
+    npm run build
 
-## Live deployment evidence
+All ten individual claim commands passed 1/1. The full live suite passed
+21/21, and the build passed. Browser checks used fresh 390 × 844 and 1440 ×
+900 contexts, direct route requests, and same-origin request interception.
 
-- `https://trace-before-run.sociobot.in/`: cold 200 check passed in 1,250 ms;
-  title, `lang=en`, one h1, main, alt text, labeled buttons, and zero console
-  or page errors. See `.factory/evidence/polish-1-live/verify.json` and its
-  desktop/mobile screenshots.
-- `https://trace-before-run.sociobot.in/demo`: cold 200 check passed in 753 ms;
-  route title is `Demo — Trace Before Run`, with one h1, main, and zero browser
-  errors. See `.factory/evidence/polish-1-live/demo/verify.json` and its
-  desktop/mobile screenshots.
-- `PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in CI=1 npm test`:
-  PASS; `test-results/.last-run.json` records `status: passed` with no failed
-  tests. The live `@claim:reset-demo` and `@claim:offline-reload` commands
-  also passed individually, 1/1 each.
-- The suite's Axe coverage found zero serious or critical issues across `/`,
-  `/demo`, `/play`, `/privacy`, `/terms`, the 404 route, and dark treatment.
+## Next steps
 
-## Demo and operation
-
-Use `https://trace-before-run.sociobot.in/demo` or `/?demo=1` for the one-click
-sample. The persistent banner offers Reset demo and Start for real. Demo uses
-`demo:trace-before-run:progress`; normal practice uses the separate
-`real:trace-before-run:progress` key. Reset deletes only the demo key.
-
-```sh
-npm ci
-npm test
-npm run build
-```
-
-No known product gaps remain. The product stays a static Vite + TypeScript
-site; deployment is the factory's Azure Static Web Apps work order.
+Implement the concrete repairs in F-2-1 through F-2-3, deploy them, and repeat
+the entire review checklist from a fresh clone and browser context.
