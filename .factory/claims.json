@@ -14,11 +14,25 @@
     "sandbox": "fresh browser context at /demo; replace the snippet with an unsupported import"
   },
   {
+    "id": "editable-trace",
+    "claim": "Changing supported values changes the trace result.",
+    "where": "practice editor, README",
+    "test": "npm test -- --grep @claim:editable-trace",
+    "sandbox": "fresh browser context at /demo; change the starting score, predict the new path, and assert the new printed result"
+  },
+  {
     "id": "demo-isolated",
     "claim": "Demo data is stored separately and no practice data is read or written.",
     "where": "demo banner, privacy page, README",
     "test": "npm test -- --grep @claim:demo-isolated",
     "sandbox": "fresh browser context at /demo; commit a trace and inspect storage and network requests"
+  },
+  {
+    "id": "local-only",
+    "claim": "Practice progress stays in browser storage; code and answers are not sent to another origin.",
+    "where": "landing facts, privacy page, README",
+    "test": "npm test -- --grep @claim:local-only",
+    "sandbox": "fresh browser context at /play; complete the first trace, inspect the real storage key, and assert every request is same-origin GET"
   },
   {
     "id": "open-access",

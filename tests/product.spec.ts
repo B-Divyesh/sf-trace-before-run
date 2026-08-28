@@ -47,6 +47,19 @@ test("@claim:restricted-grammar rejects code outside the teaching grammar", asyn
   await expect(editor).toHaveValue(/score = 7/);
 });
 
+test("@claim:editable-trace uses edited values in the result", async ({ page }) => {
+  await page.goto("/demo");
+  const editor = page.getByRole("textbox", { name: "Editable Python-like snippet" });
+  await editor.fill((await editor.inputValue()).replace("score = 7", "score = 3"));
+  await page.getByLabel("Final value of score").fill("3");
+  await page.getByLabel("Final value of badge").fill("0");
+  await page.getByLabel("Printed output").fill("3");
+  await page.getByLabel("Else path", { exact: true }).check();
+  await page.getByRole("button", { name: "Commit my trace" }).click();
+  await expect(page.getByText("Trace matched")).toBeVisible();
+  await expect(page.getByText("Prints 3.")).toBeVisible();
+});
+
 test("missing predictions produce a specific error", async ({ page }) => {
   await page.goto("/demo");
   await page.getByRole("button", { name: "Commit my trace" }).click();
@@ -71,6 +84,24 @@ test("@claim:demo-isolated keeps demo progress out of practice storage", async (
   expect(externalRequests).toEqual([]);
 });
 
+test("@claim:local-only keeps practice progress and answers in the browser", async ({ page }) => {
+  const requests: { url: string; method: string }[] = [];
+  page.on("request", (request) => requests.push({ url: request.url(), method: request.method() }));
+  await page.goto("/play");
+  await page.getByLabel("Final value of marbles").fill("4");
+  await page.getByLabel("Final value of boxes").fill("2");
+  await page.getByLabel("Printed output").fill("2");
+  await page.getByLabel("If path", { exact: true }).check();
+  await page.waitForTimeout(500);
+  const requestCountBeforeCommit = requests.length;
+  await page.getByRole("button", { name: "Commit my trace" }).click();
+  await page.waitForTimeout(100);
+  const keys = await page.evaluate(() => Object.keys(localStorage));
+  expect(keys).toContain("real:trace-before-run:progress");
+  expect(requests).toHaveLength(requestCountBeforeCommit);
+  expect(requests.every((request) => new URL(request.url).origin === "http://127.0.0.1:4173" && request.method === "GET")).toBe(true);
+});
+
 test("@claim:open-access starts practice without an account or payment", async ({ page }) => {
   await page.goto("/play");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Split the marbles");
@@ -84,6 +115,12 @@ test("reset demo returns to the seeded puzzle", async ({ page }) => {
   await page.getByRole("button", { name: "Reset demo" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Add the badge");
   await expect(page.getByLabel("Final value of score")).toHaveValue("");
+});
+
+test("the demo query alias opens the isolated sample", async ({ page }) => {
+  await page.goto("/?demo=1");
+  await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Add the badge");
 });
 
 test("@claim:five-puzzles completes a five-item practice session", async ({ page }) => {
