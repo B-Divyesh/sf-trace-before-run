@@ -47,17 +47,28 @@ test("@claim:restricted-grammar rejects code outside the teaching grammar", asyn
   await expect(editor).toHaveValue(/score = 7/);
 });
 
-test("@claim:editable-trace uses edited values in the result", async ({ page }) => {
+test("@claim:editable-trace refreshes the path for an edited loop", async ({ page }) => {
   await page.goto("/demo");
   const editor = page.getByRole("textbox", { name: "Editable Python-like snippet" });
-  await editor.fill((await editor.inputValue()).replace("score = 7", "score = 3"));
-  await page.getByLabel("Final value of score").fill("3");
+  await editor.fill(`score = 0
+badge = 0
+for step in range(20):
+    score = score + 1
+print(score)`);
+  await expect(page.getByText("Line 1 is outside the supported grammar.")).toHaveCount(0);
+  await expect(page.getByLabel("Loop 20 times", { exact: true })).toBeVisible();
+  await editor.fill((await editor.inputValue()).replace("range(20)", "range(19)"));
+  await expect(page.getByLabel("Loop 19 times", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Loop 20 times", { exact: true })).toHaveCount(0);
+  await editor.fill((await editor.inputValue()).replace("range(19)", "range(20)"));
+  await expect(page.getByLabel("Loop 20 times", { exact: true })).toBeVisible();
+  await page.getByLabel("Final value of score").fill("20");
   await page.getByLabel("Final value of badge").fill("0");
-  await page.getByLabel("Printed output").fill("3");
-  await page.getByLabel("Else path", { exact: true }).check();
+  await page.getByLabel("Printed output").fill("20");
+  await page.getByLabel("Loop 20 times", { exact: true }).check();
   await page.getByRole("button", { name: "Commit my trace" }).click();
   await expect(page.getByText("Trace matched")).toBeVisible();
-  await expect(page.getByText("Prints 3.")).toBeVisible();
+  await expect(page.getByText("Prints 20.")).toBeVisible();
 });
 
 test("missing predictions produce a specific error", async ({ page }) => {
@@ -65,6 +76,24 @@ test("missing predictions produce a specific error", async ({ page }) => {
   await page.getByRole("button", { name: "Commit my trace" }).click();
   await expect(page.getByText("Add a prediction for score. Then commit the trace.")).toBeVisible();
   await expect(page.getByLabel("Final value of score")).toBeFocused();
+});
+
+test("non-numeric final values show a format error before reveal", async ({ page }) => {
+  await page.goto("/demo");
+  await page.getByLabel("Final value of score").fill("not-a-number");
+  await page.getByLabel("Final value of badge").fill("1");
+  await page.getByLabel("Printed output").fill("8");
+  await page.getByLabel("If path", { exact: true }).check();
+  await page.getByRole("button", { name: "Commit my trace" }).click();
+  await expect(page.getByText("Enter a whole number for score. Then commit the trace.")).toBeVisible();
+  await expect(page.getByLabel("Final value of score")).toBeFocused();
+  await expect(page.getByLabel("Final value of score")).toHaveAttribute("aria-invalid", "true");
+  await expect(page.getByTestId("reveal")).toHaveCount(0);
+  await page.getByLabel("Final value of score").fill("8");
+  await expect(page.getByLabel("Final value of score")).not.toHaveAttribute("aria-invalid", "true");
+  await expect(page.getByText("Enter a whole number for score. Then commit the trace.")).toHaveCount(0);
+  await page.getByRole("button", { name: "Commit my trace" }).click();
+  await expect(page.getByText("Trace matched")).toBeVisible();
 });
 
 test("@claim:demo-isolated keeps demo progress out of practice storage", async ({ page }) => {
@@ -172,6 +201,34 @@ test("@claim:offline-reload works offline after the first visit", async ({ page,
   await context.setOffline(false);
 });
 
+test("service worker update activates the current cache and removes a stale cache", async ({ page }) => {
+  await page.goto("/demo");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    const stale = await caches.open("trace-before-run-v1");
+    await stale.put("/stale", new Response("old"));
+    const registration = await navigator.serviceWorker.getRegistration();
+    await registration?.unregister();
+  });
+  await page.reload();
+  const state = await page.evaluate(async () => {
+    const registration = await navigator.serviceWorker.ready;
+    await new Promise<void>((resolve) => {
+      if (registration.active?.state === "activated") resolve();
+      else registration.active?.addEventListener("statechange", () => registration.active?.state === "activated" && resolve(), { once: true });
+    });
+    return {
+      active: registration.active?.scriptURL.endsWith("/sw.js"),
+      waiting: registration.waiting === null,
+      caches: await caches.keys(),
+    };
+  });
+  expect(state.active).toBe(true);
+  expect(state.waiting).toBe(true);
+  expect(state.caches).toContain("trace-before-run-v2");
+  expect(state.caches).not.toContain("trace-before-run-v1");
+});
+
 test("routes have one h1 and no serious accessibility issues", async ({ page }) => {
   for (const route of ["/", "/demo", "/play", "/privacy", "/terms", "/missing-page"]) {
     await page.goto(route);
@@ -191,11 +248,31 @@ test("dark treatment has no serious accessibility issues", async ({ page }) => {
   }
 });
 
-test("landing and workbench fit a 390px screen", async ({ page }) => {
+test("theme toggle changes the first time when the OS starts dark", async ({ browser }) => {
+  const context = await browser.newContext({ colorScheme: "dark" });
+  const page = await context.newPage();
+  await page.goto("/");
+  const before = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await page.getByRole("button", { name: "Switch color theme" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  const after = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(after).not.toBe(before);
+  await page.getByRole("button", { name: "Switch color theme" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await context.close();
+});
+
+test("390px pages fit and actionable controls are at least 44px tall", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ["/", "/demo"]) {
-    await page.goto(route);
-    const widths = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
-    expect(widths.scroll).toBeLessThanOrEqual(widths.client);
+  await page.goto("/");
+  let widths = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+  expect(widths.scroll).toBeLessThanOrEqual(widths.client);
+  await expect.poll(async () => (await page.getByRole("link", { name: "Start the five puzzles" }).boundingBox())?.height).toBeGreaterThanOrEqual(44);
+
+  await page.goto("/demo");
+  widths = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+  expect(widths.scroll).toBeLessThanOrEqual(widths.client);
+  for (const name of ["Reset demo", "Start for real"]) {
+    await expect.poll(async () => (await page.getByRole(name === "Reset demo" ? "button" : "link", { name }).boundingBox())?.height).toBeGreaterThanOrEqual(44);
   }
 });

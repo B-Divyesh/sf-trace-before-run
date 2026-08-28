@@ -15,10 +15,10 @@
   },
   {
     "id": "editable-trace",
-    "claim": "Changing supported values changes the trace result.",
+    "claim": "Changing supported code refreshes the available path and trace result.",
     "where": "practice editor, README",
     "test": "npm test -- --grep @claim:editable-trace",
-    "sandbox": "fresh browser context at /demo; change the starting score, predict the new path, and assert the new printed result"
+    "sandbox": "fresh browser context at /demo; replace the branch with a 20-turn loop, choose its refreshed path, and assert the new printed result"
   },
   {
     "id": "demo-isolated",

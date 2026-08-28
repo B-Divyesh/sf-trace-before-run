@@ -232,7 +232,10 @@ h3 {
 
 .demo-actions button,
 .demo-actions a {
-  min-height: 40px;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
   padding: 8px 12px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   color: #fff9ec;
@@ -515,7 +518,9 @@ h3 {
 }
 
 .text-link {
+  display: inline-flex;
   grid-column: 3;
+  align-items: center;
   justify-self: start;
   min-height: 44px;
   font-weight: 850;
@@ -740,6 +745,11 @@ h3 {
 }
 
 .path-picker {
+  display: grid;
+  gap: 8px;
+}
+
+.path-picker [data-path-choices] {
   display: grid;
   gap: 8px;
 }

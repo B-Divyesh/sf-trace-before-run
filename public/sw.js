@@ -1,4 +1,4 @@
-const CACHE = "trace-before-run-v1";
+const CACHE = "trace-before-run-v2";
 const SHELL = [
   "/",
   "/demo",

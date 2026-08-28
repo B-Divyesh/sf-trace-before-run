@@ -194,6 +194,10 @@ function pathOptions(puzzle: Puzzle, result: RunResult): string[] {
   return [...options];
 }
 
+function pathChoicesMarkup(options: string[], selected: string) {
+  return options.map((option) => `<label><input type="radio" name="path" value="${escapeHtml(option)}" ${selected === option ? "checked" : ""} required><span><i aria-hidden="true"></i>${escapeHtml(option)}</span></label>`).join("");
+}
+
 function scoreSummary(state: PracticeState) {
   return `${state.solved.size} of ${puzzles.length} solved`;
 }
@@ -292,18 +296,19 @@ function practicePage(demo: boolean) {
         <div class="panel-title"><div><p class="eyebrow">Your prediction</p><h2>Commit the final state</h2></div><span class="lock-note"><span aria-hidden="true">◇</span> Hidden until commit</span></div>
         <fieldset class="variable-ledger">
           <legend>Final variable values</legend>
-          ${puzzle.predict.map((name) => `<label><span>${escapeHtml(name)}</span><input inputmode="numeric" pattern="-?[0-9]+" name="variable-${escapeHtml(name)}" value="${escapeHtml(state.predictions[name] || "")}" aria-label="Final value of ${escapeHtml(name)}" required></label>`).join("")}
+          ${puzzle.predict.map((name) => `<label><span>${escapeHtml(name)}</span><input inputmode="numeric" pattern="-?[0-9]+" name="variable-${escapeHtml(name)}" value="${escapeHtml(state.predictions[name] || "")}" aria-label="Final value of ${escapeHtml(name)}" aria-describedby="prediction-error" required></label>`).join("")}
           <label><span>printed</span><input inputmode="numeric" name="output" value="${escapeHtml(state.predictions.output || "")}" aria-label="Printed output" required></label>
         </fieldset>
-        <fieldset class="path-picker">
+        <fieldset class="path-picker" data-path-picker>
           <legend>Path through the code</legend>
-          ${options.map((option) => `<label><input type="radio" name="path" value="${escapeHtml(option)}" ${state.path === option ? "checked" : ""} required><span><i aria-hidden="true"></i>${escapeHtml(option)}</span></label>`).join("")}
+          <div data-path-choices>${pathChoicesMarkup(options, state.path)}</div>
         </fieldset>
+        <p class="sr-only" role="status" data-path-status></p>
         <div class="prediction-actions">
           <button class="button button-primary" type="submit" ${validation ? "disabled" : ""}>Commit my trace</button>
           <button class="button button-quiet" type="button" data-hint>${state.hint ? "Hide the nudge" : "Show one nudge"}</button>
         </div>
-        <p class="form-error" role="alert" data-form-error></p>
+        <p class="form-error" id="prediction-error" role="alert" data-form-error></p>
         ${state.hint ? `<p class="hint-note"><span aria-hidden="true">↳</span>${escapeHtml(puzzle.nudge)}</p>` : ""}
       </form>
     </section>
@@ -372,8 +377,9 @@ function bindCommonEvents() {
     });
   });
   document.querySelector<HTMLButtonElement>(".theme-toggle")?.addEventListener("click", () => {
-    const current = document.documentElement.dataset.theme;
-    document.documentElement.dataset.theme = current === "dark" ? "light" : "dark";
+    const selected = document.documentElement.dataset.theme;
+    const isDark = selected ? selected === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.dataset.theme = isDark ? "light" : "dark";
   });
   document.querySelector<HTMLButtonElement>("[data-reset-demo]")?.addEventListener("click", () => {
     localStorage.removeItem(storageKey(true));
@@ -410,6 +416,13 @@ function bindPracticeEvents() {
   }
   const puzzle = puzzles[state.current];
   const editor = document.querySelector<HTMLTextAreaElement>("#code-editor");
+  document.querySelectorAll<HTMLInputElement>('.variable-ledger input[pattern]').forEach((input) => {
+    input.addEventListener("input", () => {
+      input.removeAttribute("aria-invalid");
+      const error = document.querySelector<HTMLElement>("[data-form-error]");
+      if (error?.textContent?.startsWith("Enter a whole number")) error.textContent = "";
+    });
+  });
   editor?.addEventListener("input", () => {
     state.code = editor.value;
     state.revealed = false;
@@ -420,6 +433,14 @@ function bindPracticeEvents() {
       const editedRun = runSnippet(state.code);
       const missing = puzzle.predict.filter((name) => !(name in editedRun.variables));
       if (missing.length) throw new SyntaxProblem(`The edited snippet no longer sets ${missing.join(" and ")}. Restore the puzzle or set that variable.`);
+      const options = pathOptions(puzzle, editedRun);
+      const selectedPath = document.querySelector<HTMLInputElement>('[data-path-picker] input[name="path"]:checked')?.value || state.path;
+      state.path = options.includes(selectedPath) ? selectedPath : "";
+      const choices = document.querySelector<HTMLElement>("[data-path-choices]");
+      if (choices) choices.innerHTML = pathChoicesMarkup(options, state.path);
+      const pathStatus = document.querySelector<HTMLElement>("[data-path-status]");
+      if (pathStatus) pathStatus.textContent = `Path choices updated: ${options.join(", ")}.`;
+      document.querySelector<HTMLElement>('[data-testid="reveal"]')?.remove();
       if (message) {
         message.hidden = true;
         message.textContent = "";
@@ -457,6 +478,14 @@ function bindPracticeEvents() {
     if (missing || !state.path) {
       if (error) error.textContent = missing ? `Add a prediction for ${missing}. Then commit the trace.` : "Choose the path through the code. Then commit the trace.";
       form.querySelector<HTMLInputElement>(missing === "output" ? '[name="output"]' : missing ? `[name="variable-${missing}"]` : '[name="path"]')?.focus();
+      return;
+    }
+    const nonNumeric = puzzle.predict.find((name) => !/^-?\d+$/.test(state.predictions[name]));
+    if (nonNumeric) {
+      const input = form.querySelector<HTMLInputElement>(`[name="variable-${nonNumeric}"]`);
+      input?.setAttribute("aria-invalid", "true");
+      if (error) error.textContent = `Enter a whole number for ${nonNumeric}. Then commit the trace.`;
+      input?.focus();
       return;
     }
     try {
