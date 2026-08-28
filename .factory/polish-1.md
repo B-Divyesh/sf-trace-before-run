@@ -18,6 +18,17 @@ in this repair round.
 
 ## Live recheck
 
-After the repair commit is pushed and deployed, this report is supplemented in
-`.factory/handoff.md` with the cold live URL checks and final deployment
-evidence.
+The repair was pushed as `03f2efc07a9b74662bd1d4384eea14a4fec355ed` and
+deployed through the static work order. Fresh production checks passed:
+
+- `/opt/fleet/lib/verify-url.sh https://trace-before-run.sociobot.in/`:
+  200; title, `lang=en`, one h1, main landmark, image alt text, labeled
+  buttons, and zero browser errors. Evidence:
+  `.factory/evidence/polish-1-live/`.
+- `/opt/fleet/lib/verify-url.sh https://trace-before-run.sociobot.in/demo`:
+  200; `Demo — Trace Before Run`, one h1, main landmark, and zero browser
+  errors. Evidence: `.factory/evidence/polish-1-live/demo/`.
+- `PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in CI=1 npm test`:
+  passed; `test-results/.last-run.json` records `{"status":"passed"}`.
+- The live `@claim:reset-demo` and `@claim:offline-reload` tests each passed
+  1/1 from fresh production browser contexts.
