@@ -1,6 +1,6 @@
 # Copy audit
 
-Audited 28 August 2026 for polish round 3. Counts use whitespace-separated
+Audited 29 August 2026 for polish round 4. Counts use whitespace-separated
 words, treat hyphenated terms and URLs as one word, and ignore standalone
 punctuation. Code samples and repeated navigation labels are excluded.
 
@@ -50,7 +50,6 @@ punctuation. Code samples and repeated navigation labels are excluded.
 | Predict first. | 2 | Clear footer line |
 | Then inspect the trace. | 4 | Clear footer line |
 | Built by Param Factory · v1.0 | 5 | Attribution and build id |
-| Original generated art. | 3 | Provenance recorded in `.factory/design.md` |
 
 ## README
 
@@ -84,11 +83,12 @@ punctuation. Code samples and repeated navigation labels are excluded.
 
 No audited sentence exceeds 22 words or contains a banned marketing word. The
 round 3 efficacy adjective and unverified README provenance adjective are gone.
+The unlisted footer provenance sentence identified in review 4 is also gone.
 
 ## Catalog description
 
-“Practice Python traces by predicting values, paths, and output before the
-reveal.” starts with a verb and is 81 characters.
+“Trace Python by predicting values, paths, and output before revealing the
+result.” starts with a verb and is 81 characters.
 
 ## Terminology table
 

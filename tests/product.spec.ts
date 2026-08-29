@@ -1,9 +1,34 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 
 const productOrigin = new URL(process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:4173").origin;
 const canonicalOrigin = "https://trace-before-run.sociobot.in";
+
+const practiceAnswers = [
+  { variables: { marbles: "4", boxes: "2" }, output: "2", path: "If path" },
+  { variables: { score: "8", badge: "1" }, output: "8", path: "If path" },
+  { variables: { total: "6", signal: "1" }, output: "1", path: "Loop 4 times → If path" },
+  { variables: { tickets: "12", turn: "1" }, output: "12", path: "Loop 2 times" },
+  { variables: { room: "9", outside: "4" }, output: "9", path: "Else path" },
+];
+
+async function completePractice(page: Page, inspectForGate = false) {
+  for (const [index, answer] of practiceAnswers.entries()) {
+    await expect(page.getByText(`Puzzle ${index + 1} of 5`, { exact: false })).toBeVisible();
+    if (inspectForGate) {
+      await expect(page.locator('input[type="password"], input[autocomplete="email"], input[autocomplete="username"]')).toHaveCount(0);
+      await expect(page.getByRole("button", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
+      await expect(page.getByRole("link", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
+    }
+    for (const [name, value] of Object.entries(answer.variables)) await page.getByLabel(`Final value of ${name}`).fill(value);
+    await page.getByLabel("Printed output").fill(answer.output);
+    await page.getByLabel(answer.path, { exact: true }).check();
+    await page.getByRole("button", { name: "Commit my trace" }).click();
+    await expect(page.getByText("Trace matched")).toBeVisible();
+    await page.getByRole("button", { name: index === practiceAnswers.length - 1 ? "See session result" : "Trace the next puzzle" }).click();
+  }
+}
 
 test("landing explains the job and links to a ready demo", async ({ page }) => {
   await page.goto("/");
@@ -24,8 +49,9 @@ test("review copy states facts without unverified efficacy or provenance wording
   expect(readme).toContain("Five puzzles ask for final variable values, the branch path, and printed output.");
   expect(readme).not.toContain("Five original puzzles");
   const catalog = readFileSync(new URL("../.factory/catalog-description.txt", import.meta.url), "utf8").trim();
-  expect(catalog).toBe("Practice Python traces by predicting values, paths, and output before the reveal.");
+  expect(catalog).toBe("Trace Python by predicting values, paths, and output before revealing the result.");
   expect(catalog.length).toBeLessThanOrEqual(120);
+  await expect(page.getByText("Original generated art.")).toHaveCount(0);
 });
 
 test("@claim:prediction-reveal commits before showing a line trace", async ({ page }) => {
@@ -221,11 +247,19 @@ test("@claim:local-only keeps practice progress and answers in the browser", asy
   expect(requests.every((request) => new URL(request.url).origin === productOrigin && request.method === "GET")).toBe(true);
 });
 
-test("@claim:open-access starts practice without an account or payment", async ({ page }) => {
+test("@claim:open-access completes practice without an account or payment", async ({ page }) => {
+  const requests: { url: string; method: string }[] = [];
+  page.on("request", (request) => requests.push({ url: request.url(), method: request.method() }));
   await page.goto("/play");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Split the marbles");
-  await expect(page.locator('input[type="password"]')).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Commit my trace" })).toBeVisible();
+  await completePractice(page, true);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("You traced all five programs");
+  await expect(page.getByText("Each puzzle matched on at least one attempt.")).toBeVisible();
+  await expect(page.locator('input[type="password"], input[autocomplete="email"], input[autocomplete="username"]')).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
+  expect(requests.length).toBeGreaterThan(0);
+  expect(requests.every(({ url, method }) => new URL(url).origin === productOrigin && method === "GET")).toBe(true);
 });
 
 test("@claim:reset-demo returns the seeded sample without changing practice progress", async ({ page }) => {
@@ -349,22 +383,7 @@ test("@claim:five-puzzles completes a five-item practice session", async ({ page
   await page.goto("/play");
   const progress = page.getByRole("progressbar", { name: "Puzzle progress" });
   await expect(progress).toHaveAttribute("aria-valuemax", "5");
-  const answers = [
-    { variables: { marbles: "4", boxes: "2" }, output: "2", path: "If path" },
-    { variables: { score: "8", badge: "1" }, output: "8", path: "If path" },
-    { variables: { total: "6", signal: "1" }, output: "1", path: "Loop 4 times → If path" },
-    { variables: { tickets: "12", turn: "1" }, output: "12", path: "Loop 2 times" },
-    { variables: { room: "9", outside: "4" }, output: "9", path: "Else path" },
-  ];
-  for (const [index, answer] of answers.entries()) {
-    await expect(page.getByText(`Puzzle ${index + 1} of 5`, { exact: false })).toBeVisible();
-    for (const [name, value] of Object.entries(answer.variables)) await page.getByLabel(`Final value of ${name}`).fill(value);
-    await page.getByLabel("Printed output").fill(answer.output);
-    await page.getByLabel(answer.path, { exact: true }).check();
-    await page.getByRole("button", { name: "Commit my trace" }).click();
-    await expect(page.getByText("Trace matched")).toBeVisible();
-    await page.getByRole("button", { name: index === 4 ? "See session result" : "Trace the next puzzle" }).click();
-  }
+  await completePractice(page);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("You traced all five programs");
   await expect(page.getByText("Each puzzle matched on at least one attempt.")).toBeVisible();
 });

@@ -60,7 +60,7 @@
     "claim": "The complete practice is free and needs no account.",
     "where": "landing facts, hero action, README",
     "test": "npm test -- --grep @claim:open-access",
-    "sandbox": "fresh browser context at /play; assert the first puzzle and commit action are available with no password input"
+    "sandbox": "fresh browser context at /play; solve all five puzzles, assert the session result appears without account or payment controls, and reject billing or external requests"
   },
   {
     "id": "first-difference",

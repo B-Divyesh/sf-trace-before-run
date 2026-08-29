@@ -117,7 +117,7 @@ function shell(content: string, demo = false) {
     <footer class="site-footer">
       <p><strong>Trace Before Run</strong><br><span>Predict first. Then inspect the trace.</span></p>
       <nav aria-label="Footer navigation"><a href="/privacy" data-link>Privacy</a><a href="/terms" data-link>Terms</a></nav>
-      <p>Built by Param Factory · v1.0<br><span>Original generated art.</span></p>
+      <p>Built by Param Factory · v1.0</p>
     </footer>
     <div class="sr-only" aria-live="polite" id="route-status"></div>`;
 }
