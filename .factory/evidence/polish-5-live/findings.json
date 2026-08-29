@@ -1,0 +1,77 @@
+{
+  "checkedAt": "2026-08-29T05:45:00Z",
+  "url": "https://trace-before-run.sociobot.in",
+  "sourceCommit": "68117cfc8fe983c0d068632a1457669595665f8a",
+  "deploymentId": "ee2a215a-bf77-4f46-85b1-3f67a00b9a65",
+  "coldFirstRead": {
+    "390x844": {
+      "title": "Trace Before Run — predict Python output",
+      "heading": "Predict Python before you run it",
+      "supportingLabel": "Five Python tracing puzzles",
+      "actionBottom": 547.296875,
+      "lastFactBottom": 677.6875,
+      "viewportHeight": 844,
+      "consoleErrors": []
+    },
+    "1440x900": {
+      "title": "Trace Before Run — predict Python output",
+      "heading": "Predict Python before you run it",
+      "supportingLabel": "Five Python tracing puzzles",
+      "actionBottom": 648.046875,
+      "lastFactBottom": 778.4375,
+      "viewportHeight": 900,
+      "consoleErrors": []
+    }
+  },
+  "round5Copy": {
+    "captionCount": 0,
+    "previewLabel": "Example tracing puzzle",
+    "previewMarker": "01 / Example puzzle",
+    "forbiddenStringsFound": [],
+    "notFoundStatus": 404,
+    "notFoundLabel": "Page not found",
+    "notFoundHeading": "This page does not exist",
+    "notFoundAction": "Return home"
+  },
+  "demoReset": {
+    "heading": "Add the badge",
+    "demoStorageAfterReset": null,
+    "realStorageAfterReset": "{\"current\":3,\"solved\":[\"sentinel\"],\"attempts\":17}",
+    "consoleErrors": []
+  },
+  "completePractice": {
+    "heading": "You traced all five programs",
+    "externalOrWriteRequests": []
+  },
+  "historyRestore": {
+    "expectedScrollY": 2124,
+    "actualScrollY": 2124,
+    "headingFocused": true
+  },
+  "routes": {
+    "/": 200,
+    "/?demo=1": 200,
+    "/demo": 200,
+    "/play": 200,
+    "/privacy": 200,
+    "/terms": 200,
+    "/not-a-real-route": 404
+  },
+  "lighthouse": {
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "fcpMs": 911.245,
+    "lcpMs": 1061.245,
+    "tbtMs": 8,
+    "cls": 0,
+    "transferredBytes": 30771
+  },
+  "artifactHashes": {
+    "index.html": "a7b2c5b66bb55942649283409718f201828d103ef75d6d530ee69ce925983b56",
+    "index-U9USDiN4.js": "75e5bac9517ff19403988d130635af3adab52660371e03a843c10625b40c252e",
+    "index-x8kGLZ5a.css": "b07bd63b2b346907ef886ee332ecc383ada897d87768da850f4bf148a69d421b",
+    "sw.js": "1bc888596c11279d0181f95c281ad2a97f69d33b2516a76b8930c818d78a9f6a"
+  }
+}
