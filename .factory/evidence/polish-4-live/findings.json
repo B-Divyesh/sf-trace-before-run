@@ -1,0 +1,109 @@
+{
+  "checkedAt": "2026-08-29T04:31:08.725Z",
+  "origin": "https://trace-before-run.sociobot.in",
+  "consoleErrorsOnKnownRoutes": [],
+  "expectedUnknownRouteConsole": "The deliberate /not-a-real-route document request returned 404.",
+  "home_mobile": {
+    "status": 200,
+    "title": "Trace Before Run — predict Python output",
+    "h1": "Predict Python before you run it",
+    "action": {
+      "top": 438.875,
+      "bottom": 547.296875
+    },
+    "lastFact": {
+      "top": 652.890625,
+      "bottom": 677.6875
+    },
+    "footerText": "Trace Before RunPredict first. Then inspect the trace. PrivacyTerms Built by Param Factory · v1.0",
+    "hasProvenanceClaim": false
+  },
+  "home_desktop": {
+    "status": 200,
+    "title": "Trace Before Run — predict Python output",
+    "h1": "Predict Python before you run it",
+    "action": {
+      "top": 599.25,
+      "bottom": 648.046875
+    },
+    "lastFact": {
+      "top": 753.640625,
+      "bottom": 778.4375
+    },
+    "footerText": "Trace Before RunPredict first. Then inspect the trace. PrivacyTerms Built by Param Factory · v1.0",
+    "hasProvenanceClaim": false
+  },
+  "demo": {
+    "title": "Demo — Trace Before Run",
+    "banner": true,
+    "reset": true,
+    "startReal": true,
+    "afterReset": {
+      "demo": null,
+      "real": "{\"current\":4,\"solved\":[\"sentinel\"],\"attempts\":9}"
+    },
+    "resetHeading": "Add the badge"
+  },
+  "openAccess": {
+    "heading": "You traced all five programs",
+    "gateCount": 0,
+    "passwordInputsAtResult": 0,
+    "externalRequests": [],
+    "nonGetRequests": []
+  },
+  "history": {
+    "landingY": 2184,
+    "restoredLandingY": 2184,
+    "practiceY": 420,
+    "restoredPracticeY": 420,
+    "focusedH1": true
+  },
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Trace Before Run — predict Python output",
+      "h1": 1,
+      "main": 1
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "title": "Demo — Trace Before Run",
+      "h1": 1,
+      "main": 1
+    },
+    {
+      "path": "/play",
+      "status": 200,
+      "title": "Practice — Trace Before Run",
+      "h1": 1,
+      "main": 1
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "title": "Privacy — Trace Before Run",
+      "h1": 1,
+      "main": 1
+    },
+    {
+      "path": "/terms",
+      "status": 200,
+      "title": "Terms — Trace Before Run",
+      "h1": 1,
+      "main": 1
+    },
+    {
+      "path": "/not-a-real-route",
+      "status": 404,
+      "title": "Page not found — Trace Before Run",
+      "h1": 1,
+      "main": 1
+    }
+  ],
+  "unknownLegalLinks": {
+    "privacy": "/privacy",
+    "terms": "/terms"
+  }
+}
