@@ -1,3 +1,23 @@
+# Trace Before Run — verification 5 handoff
+
+## Independent verification result: PASS
+
+Candidate `ca380b516ae935c4e30f1aeb6fb6f6b8148f0508` at
+<https://trace-before-run.sociobot.in> is accepted. The production deployment
+matches the fresh candidate build. No critical, high, medium, or low defects
+were found.
+
+Exact fresh evidence: all twelve required claim commands passed from the demo;
+local and live Playwright suites passed 27/27; `npm run build` passed; JS is
+10.29 KB gzip and CSS is 4.64 KB gzip; and live mobile Lighthouse scored 100
+in Performance, Accessibility, Best Practices, and SEO (LCP 1.0 s, TBT 10 ms,
+CLS 0). Privacy/network, headers, offline reload, service-worker update,
+keyboard, reduced motion, 390 px layout, and axe serious/critical checks
+passed. See `.factory/verification-5.md` for commands, hash evidence, and the
+full findings record.
+
+---
+
 # Trace Before Run — polish 5 handoff
 
 ## Result: PASS
