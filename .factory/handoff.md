@@ -1,39 +1,31 @@
-# Trace Before Run — verification 4 handoff
+# Trace Before Run — review 5 handoff
 
-## Result: PASS
+## Result: FAIL
 
-Independent verification accepted candidate
-`b2f55b98f246e054c5d69463bcaebe5ba128514f` at
-<https://trace-before-run.sociobot.in>. The deployed HTML, JS, CSS, and
-service worker exactly match the fresh candidate build. The earlier
-deployment-only concern did not reproduce.
+This was a reviewer-only pass. No product code or product assets were changed.
+The complete adversarial report is in `.factory/review-5.md`.
 
 ## What was verified
 
-- All 12 required claim commands passed individually from the demo entry point.
-- Local and deployed full Playwright suites passed 27/27.
-- Production build, strict TypeScript check, audit, bundle budgets, live
-  headers, same-origin privacy behavior, PWA offline reload/update, keyboard,
-  390 px layout, reduced motion, first-read, and axe serious/critical scans
+- Fresh 390 × 844 and 1440 × 900 live first reads made the job, audience, and
+  sample action clear without scrolling.
+- The live demo opened in one click with sample data. It wrote only the
+  `demo:` storage key, preserved a seeded `real:` key, reset cleanly, and made
+  only same-origin GET requests.
+- All 12 declared claim commands passed separately from a fresh clone.
+- Local `CI=1 npm test`, `npm run build`, and the 27-test production suite
   passed.
-- The product meets the researched brief: a free, local, five-puzzle,
-  prediction-before-reveal tracing drill with editable restricted grammar and
-  no arbitrary Python execution.
+- Internal link crawl, routing, metadata, 404, focus/history behavior,
+  accessibility checks, and earlier-review regression checks passed.
 
-Full evidence, exact commands, hashes, scores, and severity assessment are in
-`.factory/verification-4.md`.
+## Remaining work
 
-## Run and verify
+Five minor plain-language violations prevent acceptance. Remove or rewrite:
 
-```sh
-npm ci
-npm test
-npm run build
-PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test
-```
+- “At the logic observatory, every value has a place and every branch leaves a trail.”
+- “A five-puzzle tracing desk”
+- “The prediction desk”
+- “01 / Look”
+- “Wrong branch” on the 404 page
 
-## Known gaps and next steps
-
-No reproducible release defects or remaining product work within the researched
-scope. The factory may retain this static deployment and use
-`https://trace-before-run.sociobot.in/?demo=1` for catalog verification.
+After repair, rerun the command set documented in `.factory/review-5.md`.
