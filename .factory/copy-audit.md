@@ -1,6 +1,6 @@
 # Copy audit
 
-Audited 29 August 2026 for polish round 4. Counts use whitespace-separated
+Audited 29 August 2026 for polish round 5. Counts use whitespace-separated
 words, treat hyphenated terms and URLs as one word, and ignore standalone
 punctuation. Code samples and repeated navigation labels are excluded.
 
@@ -12,7 +12,7 @@ punctuation. Code samples and repeated navigation labels are excluded.
 | Trace Before Run | 3 | Wordmark |
 | Practice / Demo / Privacy | 1 each | Clear navigation labels |
 | Switch color theme | 3 | Clear accessible action |
-| A five-puzzle tracing desk | 4 | Clear supporting label |
+| Five Python tracing puzzles | 4 | Factual supporting label |
 | Predict Python before you run it | 6 | Plain job headline |
 | For new Python learners who know syntax but lose track of changing values. | 13 | Audience and situation |
 | Try it with sample data | 5 | Result-naming action |
@@ -21,8 +21,8 @@ punctuation. Code samples and repeated navigation labels are excluded.
 | Free to use. | 3 | Listed claim: `open-access` |
 | Works offline after the first visit. | 6 | Listed claim: `offline-reload` |
 | Practice stays on this device. | 5 | Listed claim: `local-only` |
-| At the logic observatory, every value has a place and every branch leaves a trail. | 15 | Nonessential illustration caption |
-| The prediction desk | 3 | Clear section label |
+| 01 / Example puzzle | 3 | Factual section marker |
+| Example tracing puzzle | 3 | Factual section label |
 | Hold the answer before the reveal | 6 | Clear prediction gate |
 | Read the snippet. | 3 | Clear instruction |
 | Write the final values. | 4 | Clear instruction |
@@ -84,11 +84,22 @@ punctuation. Code samples and repeated navigation labels are excluded.
 No audited sentence exceeds 22 words or contains a banned marketing word. The
 round 3 efficacy adjective and unverified README provenance adjective are gone.
 The unlisted footer provenance sentence identified in review 4 is also gone.
+Round 5's metaphorical hero caption was removed. Its contextless labels were
+replaced with factual puzzle or page labels.
+
+## Missing page
+
+| Copy | Words | Result |
+| --- | ---: | --- |
+| Page not found | 3 | Clear status label |
+| This page does not exist | 5 | Clear error heading |
+| The address does not lead to a puzzle or policy page. | 10 | Clear explanation |
+| Return home | 2 | Clear recovery action |
 
 ## Catalog description
 
-“Trace Python by predicting values, paths, and output before revealing the
-result.” starts with a verb and is 81 characters.
+“Practice Python tracing by predicting values, paths, and output before each
+reveal.” starts with a verb and is 83 characters.
 
 ## Terminology table
 

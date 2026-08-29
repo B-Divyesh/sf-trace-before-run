@@ -45,15 +45,19 @@ test("landing explains the job and links to a ready demo", async ({ page }) => {
   await expect(page.getByRole("textbox", { name: "Editable Python-like snippet" })).toHaveValue(/score = 7/);
 });
 
-test("review copy states facts without unverified efficacy or provenance wording", async ({ page }) => {
+test("review copy uses factual, product-specific plain words", async ({ page }) => {
   await page.goto("/");
+  await expect(page.getByText("Five Python tracing puzzles", { exact: true })).toBeVisible();
+  await expect(page.getByText("Example tracing puzzle", { exact: true })).toBeVisible();
+  await expect(page.getByText("01 / Example puzzle", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Trace in three moves" })).toBeVisible();
+  await expect(page.getByText(/logic observatory|prediction desk|five-puzzle tracing desk/i)).toHaveCount(0);
   const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
   expect(readme).toContain("The Playwright suite checks tracing, syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout.");
   expect(readme).toContain("Five puzzles ask for final variable values, the branch path, and printed output.");
   expect(readme).not.toContain("Five original puzzles");
   const catalog = readFileSync(new URL("../.factory/catalog-description.txt", import.meta.url), "utf8").trim();
-  expect(catalog).toBe("Trace Python by predicting values, paths, and output before revealing the result.");
+  expect(catalog).toBe("Practice Python tracing by predicting values, paths, and output before each reveal.");
   expect(catalog.length).toBeLessThanOrEqual(120);
   await expect(page.getByText("Original generated art.")).toHaveCount(0);
 });
@@ -180,6 +184,7 @@ test("@claim:demo-isolated keeps demo progress out of practice storage", async (
   const realProgress = JSON.stringify({ current: 4, solved: ["real-sentinel"], attempts: 9 });
   await page.addInitScript((value) => localStorage.setItem("real:trace-before-run:progress", value), realProgress);
   await page.goto("/?demo=1");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Add the badge");
   await page.getByLabel("Final value of score").fill("8");
   await page.getByLabel("Final value of badge").fill("1");
   await page.getByLabel("Printed output").fill("8");
@@ -187,6 +192,11 @@ test("@claim:demo-isolated keeps demo progress out of practice storage", async (
   await page.getByRole("button", { name: "Commit my trace" }).click();
   const keys = await page.evaluate(() => Object.keys(localStorage));
   expect(keys).toContain("demo:trace-before-run:progress");
+  expect(await page.evaluate(() => localStorage.getItem("real:trace-before-run:progress"))).toBe(realProgress);
+  await page.getByRole("link", { name: "Start for real" }).click();
+  await expect(page).toHaveURL(/\/play$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Read the room");
+  expect(await page.evaluate(() => localStorage.getItem("demo:trace-before-run:progress"))).toBeNull();
   expect(await page.evaluate(() => localStorage.getItem("real:trace-before-run:progress"))).toBe(realProgress);
   expect(externalRequests).toEqual([]);
 });
@@ -349,8 +359,9 @@ test("routes set their own metadata, restore focus, and serve a real 404", async
   expect(missing.status()).toBe(404);
   await page.goto("/not-a-real-route");
   await expect(page).toHaveTitle("Page not found — Trace Before Run");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("This path has no next line");
-  await expect(page.getByRole("link", { name: "Return to the first step" })).toHaveAttribute("href", "/");
+  await expect(page.getByText("Page not found", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("This page does not exist");
+  await expect(page.getByRole("link", { name: "Return home" })).toHaveAttribute("href", "/");
   const footer = page.getByRole("navigation", { name: "Footer navigation" });
   await expect(footer.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
   await expect(footer.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
@@ -443,7 +454,7 @@ test("service worker update activates the current cache and removes a stale cach
   });
   expect(state.active).toBe(true);
   expect(state.waiting).toBe(true);
-  expect(state.caches).toContain("trace-before-run-v3");
+  expect(state.caches).toContain("trace-before-run-v4");
   expect(state.caches).not.toContain("trace-before-run-v1");
 });
 

@@ -22,10 +22,10 @@
   },
   {
     "id": "demo-isolated",
-    "claim": "Demo data is stored separately and no practice data is read or written.",
+    "claim": "Demo data is stored separately; practice data is not changed, and leaving the demo discards demo progress.",
     "where": "demo banner, privacy page, README",
     "test": "npm test -- --grep @claim:demo-isolated",
-    "sandbox": "fresh browser context at /demo; commit a trace and inspect storage and network requests"
+    "sandbox": "fresh browser context at /?demo=1 with a practice sentinel; commit a trace, leave through Start for real, then inspect both storage namespaces and network requests"
   },
   {
     "id": "reset-demo",

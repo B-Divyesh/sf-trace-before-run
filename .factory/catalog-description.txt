@@ -1,1 +1,1 @@
-Trace Python by predicting values, paths, and output before revealing the result.
+Practice Python tracing by predicting values, paths, and output before each reveal.

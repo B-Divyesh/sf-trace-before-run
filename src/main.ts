@@ -131,7 +131,7 @@ function landingPage() {
   return shell(`
     <section class="hero section-shell">
       <div class="hero-copy">
-        <p class="eyebrow">A five-puzzle tracing desk</p>
+        <p class="eyebrow">Five Python tracing puzzles</p>
         <h1 tabindex="-1">Predict Python before you run it</h1>
         <p class="lede">For new Python learners who know syntax but lose track of changing values.</p>
         <div class="hero-action">
@@ -152,13 +152,12 @@ function landingPage() {
           <source type="image/webp" srcset="/assets/hero-720.webp 720w, /assets/hero-1440.webp 1440w" sizes="(max-width: 760px) 100vw, 56vw">
           <img src="/assets/hero-fallback.jpg" width="1440" height="960" fetchpriority="high" decoding="async" alt="A paper observatory with a desk, three variable jars, and a staircase that splits in two.">
         </picture>
-        <figcaption>At the logic observatory, every value has a place and every branch leaves a trail.</figcaption>
       </figure>
     </section>
     <section class="preview-section section-shell" aria-labelledby="preview-title">
-      <div class="section-number" aria-hidden="true">01 / Look</div>
+      <div class="section-number" aria-hidden="true">01 / Example puzzle</div>
       <div class="preview-heading">
-        <p class="eyebrow">The prediction desk</p>
+        <p class="eyebrow">Example tracing puzzle</p>
         <h2 id="preview-title">Hold the answer before the reveal</h2>
         <p>Read the snippet. Write the final values. Choose the path. Only then can you open the trace.</p>
       </div>
@@ -362,14 +361,14 @@ function termsPage() {
 }
 
 function notFoundPage() {
-  setMeta("Page not found — Trace Before Run", "This route does not exist. Return to the tracing desk.", routePath());
+  setMeta("Page not found — Trace Before Run", "This route does not exist. Return to Trace Before Run.", routePath());
   return shell(`
     <section class="not-found section-shell">
       <div class="lost-moon" aria-hidden="true"><span>404</span></div>
-      <p class="eyebrow">Wrong branch</p>
-      <h1 tabindex="-1">This path has no next line</h1>
+      <p class="eyebrow">Page not found</p>
+      <h1 tabindex="-1">This page does not exist</h1>
       <p>The address does not lead to a puzzle or policy page.</p>
-      <a class="button button-primary" href="/" data-link>Return to the first step</a>
+      <a class="button button-primary" href="/" data-link>Return home</a>
     </section>`);
 }
 
