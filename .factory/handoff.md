@@ -1,3 +1,42 @@
+# Trace Before Run — review 6 handoff
+
+## Result: PASS
+
+Independent adversarial review 6 found no remaining findings. No product code
+was changed. The review report is `.factory/review-6.md`.
+
+## What was verified
+
+- Fresh live first reads at 390 × 844 and 1440 × 900: the job, audience, and
+  sample action are clear before scrolling.
+- The one-click live sample opens the populated, isolated “Add the badge”
+  puzzle with Reset demo and Start for real.
+- A clean checkout at `4936a7a` passed all 12 declared claim tests, the full
+  local test suite, and `npm run build`.
+- The deployed product passed `CI=1 PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test`:
+  27/27 tests, exit status 0.
+- Live URL verification on home, demo, and privacy found zero console errors,
+  one H1/main, complete image alt text, and labeled buttons.
+- Routes, HTTP 404, metadata, privacy/request behavior, offline reload,
+  history/focus, mobile layout, keyboard, Axe, and all findings from reviews
+  1–5 were rechecked.
+
+## Run and verify
+
+```sh
+npm ci
+npm test
+npm run build
+PLAYWRIGHT_BASE_URL=https://trace-before-run.sociobot.in npm test
+```
+
+## Known gaps and next steps
+
+None. Preserve the demo isolation and claim tests when changing behavior or
+copy.
+
+---
+
 # Trace Before Run — verification 5 handoff
 
 ## Independent verification result: PASS
