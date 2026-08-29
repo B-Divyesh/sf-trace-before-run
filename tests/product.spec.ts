@@ -13,19 +13,22 @@ const practiceAnswers = [
   { variables: { room: "9", outside: "4" }, output: "9", path: "Else path" },
 ];
 
+async function expectNoAccessGate(page: Page) {
+  await expect(page.locator('input[type="password"], input[autocomplete="email"], input[autocomplete="username"]')).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
+}
+
 async function completePractice(page: Page, inspectForGate = false) {
   for (const [index, answer] of practiceAnswers.entries()) {
     await expect(page.getByText(`Puzzle ${index + 1} of 5`, { exact: false })).toBeVisible();
-    if (inspectForGate) {
-      await expect(page.locator('input[type="password"], input[autocomplete="email"], input[autocomplete="username"]')).toHaveCount(0);
-      await expect(page.getByRole("button", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
-      await expect(page.getByRole("link", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
-    }
+    if (inspectForGate) await expectNoAccessGate(page);
     for (const [name, value] of Object.entries(answer.variables)) await page.getByLabel(`Final value of ${name}`).fill(value);
     await page.getByLabel("Printed output").fill(answer.output);
     await page.getByLabel(answer.path, { exact: true }).check();
     await page.getByRole("button", { name: "Commit my trace" }).click();
     await expect(page.getByText("Trace matched")).toBeVisible();
+    if (inspectForGate) await expectNoAccessGate(page);
     await page.getByRole("button", { name: index === practiceAnswers.length - 1 ? "See session result" : "Trace the next puzzle" }).click();
   }
 }
@@ -46,6 +49,7 @@ test("review copy states facts without unverified efficacy or provenance wording
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Trace in three moves" })).toBeVisible();
   const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+  expect(readme).toContain("The Playwright suite checks tracing, syntax, keyboard use, demo isolation, offline reload, accessibility, routing, and the 390 px layout.");
   expect(readme).toContain("Five puzzles ask for final variable values, the branch path, and printed output.");
   expect(readme).not.toContain("Five original puzzles");
   const catalog = readFileSync(new URL("../.factory/catalog-description.txt", import.meta.url), "utf8").trim();
@@ -255,9 +259,7 @@ test("@claim:open-access completes practice without an account or payment", asyn
   await completePractice(page, true);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("You traced all five programs");
   await expect(page.getByText("Each puzzle matched on at least one attempt.")).toBeVisible();
-  await expect(page.locator('input[type="password"], input[autocomplete="email"], input[autocomplete="username"]')).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /pay|buy|subscribe|sign in|log in|create account/i })).toHaveCount(0);
+  await expectNoAccessGate(page);
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every(({ url, method }) => new URL(url).origin === productOrigin && method === "GET")).toBe(true);
 });
